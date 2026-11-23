@@ -1,0 +1,2915 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="GestorPro" />
+  <link id="pwa-manifest-link" rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22GestorPro%20%E2%80%94%20Control%20Integral%20de%20Negocio%22%2C%22short_name%22%3A%22GestorPro%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f8fafc%22%2C%22theme_color%22%3A%22%230f172a%22%7D" />
+  <title>GestorPro — Control Integral de Negocio en Línea</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-alt: #f1f5f9;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --success: #059669;
+      --danger: #e11d48;
+      --warning: #d97706;
+      --sidebar-w: 248px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--ink);
+      padding-bottom: 84px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    @media (min-width: 768px) {
+      body { padding-bottom: 32px; }
+    }
+    .hidden { display: none !important; }
+    .touch-btn { min-height: 44px; cursor: pointer; }
+    button { cursor: pointer; }
+    input, select, textarea { font-family: inherit; }
+
+    /* Top Bar */
+    .gp-header {
+      background: #0f172a;
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      box-shadow: 0 2px 8px rgba(15,23,42,.18);
+    }
+    .gp-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 58px;
+      gap: 10px;
+      padding: 6px 14px;
+    }
+    @media (min-width: 640px) {
+      .gp-topbar { padding: 6px 24px; }
+    }
+    .gp-brand { display: flex; align-items: center; gap: 10px; }
+    .gp-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #4f46e5;
+      color: #fff;
+      font-weight: 800;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Desktop Shell with Left Sidebar */
+    .gp-shell {
+      display: flex;
+      min-height: calc(100vh - 58px);
+      width: 100%;
+    }
+    .gp-sidebar {
+      display: none;
+    }
+    @media (min-width: 768px) {
+      .gp-sidebar {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: var(--sidebar-w);
+        min-width: var(--sidebar-w);
+        background: #0f172a;
+        color: #cbd5e1;
+        border-right: 1px solid #1e293b;
+        position: sticky;
+        top: 58px;
+        height: calc(100vh - 58px);
+        overflow-y: auto;
+        padding: 14px 12px;
+        z-index: 30;
+      }
+    }
+    .gp-sidebar-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      padding: 6px 10px 4px;
+    }
+    .gp-sidebar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .tab-btn {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #cbd5e1;
+      background: transparent;
+      border: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      text-align: left;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .tab-btn .tab-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .tab-btn i {
+      width: 18px;
+      text-align: center;
+      color: #94a3b8;
+      flex-shrink: 0;
+    }
+    .tab-btn:hover {
+      background: #1e293b;
+      color: #fff;
+    }
+    .tab-btn:hover i {
+      color: #e2e8f0;
+    }
+    .tab-btn.active {
+      background: #4f46e5;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(79,70,229,0.35);
+    }
+    .tab-btn.active i {
+      color: #fff;
+    }
+
+    .gp-main-wrap {
+      flex: 1;
+      min-width: 0;
+      width: 100%;
+    }
+    .gp-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 14px;
+    }
+    @media (min-width: 640px) {
+      .gp-container { padding: 0 24px; }
+    }
+
+    /* Mobile Bottom Navigation */
+    .gp-nav-mobile {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 62px;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      z-index: 40;
+      box-shadow: 0 -2px 10px rgba(0,0,0,.06);
+    }
+    @media (min-width: 768px) {
+      .gp-nav-mobile { display: none; }
+    }
+    .mtab-btn {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      background: transparent;
+      border: 0;
+    }
+    .mtab-btn.active { color: var(--primary); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(15,23,42,.04);
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    @media (min-width: 768px) { .grid-2 { grid-template-columns: repeat(2, 1fr); } }
+    .grid-3 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    @media (min-width: 1024px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+    .grid-5 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    @media (min-width: 1024px) { .grid-5 { grid-template-columns: repeat(5, 1fr); } }
+    .pos-layout { display: grid; grid-template-columns: 1fr; gap: 18px; }
+    @media (min-width: 1024px) { .pos-layout { grid-template-columns: 7fr 5fr; align-items: start; } }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-warning { background: #f59e0b; color: #0f172a; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-light { background: var(--surface-alt); color: var(--ink); border-color: var(--border); }
+    .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 8px; }
+
+    .input, .select, .textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 13px;
+      background: #fff;
+      color: var(--ink);
+    }
+    .input:focus, .select:focus, .textarea:focus { outline: 2px solid #6366f1; border-color: #6366f1; }
+    .label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th {
+      text-align: left;
+      padding: 10px 12px;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+    }
+    td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+    .flex { display: flex; }
+    .flex-wrap { flex-wrap: wrap; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-2 { gap: 8px; }
+    .gap-3 { gap: 12px; }
+    .space-y-2 > * + * { margin-top: 8px; }
+    .space-y-3 > * + * { margin-top: 12px; }
+    .space-y-4 > * + * { margin-top: 16px; }
+    .space-y-5 > * + * { margin-top: 20px; }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,.55);
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      overflow-y: auto;
+    }
+    .modal-box {
+      background: #fff;
+      border-radius: 18px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 20px;
+      box-shadow: 0 20px 45px rgba(0,0,0,.25);
+    }
+    .modal-sm { max-width: 440px; }
+
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .badge-ok { background: #d1fae5; color: #065f46; }
+    .badge-warn { background: #fef3c7; color: #92400e; }
+    .badge-due { background: #ffe4e6; color: #9f1239; }
+    .badge-info { background: #e0e7ff; color: #3730a3; }
+
+    .sync-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #f8fafc;
+      font-size: 12px;
+    }
+    .sync-dot { width: 9px; height: 9px; border-radius: 50%; background: #34d399; }
+
+    #toast {
+      position: fixed;
+      top: 68px;
+      right: 16px;
+      z-index: 90;
+      background: #0f172a;
+      color: #fff;
+      padding: 11px 16px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0,0,0,.25);
+    }
+
+    @media print {
+      body * { visibility: hidden !important; }
+      #print-area, #print-area * { visibility: visible !important; }
+      #print-area { position: fixed; left: 0; top: 0; width: 100%; background: #fff; padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP HEADER -->
+  <header class="gp-header">
+    <div class="gp-topbar">
+      <div class="gp-brand">
+        <div class="gp-logo">G</div>
+        <div>
+          <div style="font-weight:800;font-size:16px;line-height:1.15;">GestorPro</div>
+          <div style="font-size:11px;color:#94a3b8;">Ventas · Inventario · Encargos · Créditos</div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="openSyncModal()" class="sync-pill" title="Configurar sincronización en línea">
+          <span id="sync-dot" class="sync-dot"></span>
+          <span id="sync-label" style="max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">En línea</span>
+          <i class="fa-solid fa-cloud" style="color:#818cf8;"></i>
+        </button>
+        <button type="button" id="btn-install-app" onclick="triggerInstallApp()" class="btn btn-sm btn-primary" title="Instalar como App">
+          <i class="fa-solid fa-mobile-screen-button"></i> <span id="install-app-text">App</span>
+        </button>
+        <button type="button" onclick="switchTab('backup')" class="btn btn-sm btn-light" title="Respaldo y Nube">
+          <i class="fa-solid fa-gear"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- APP SHELL: LEFT SIDEBAR ON DESKTOP + MAIN CONTENT -->
+  <div class="gp-shell">
+    <!-- LEFT SIDEBAR NAVIGATION (DESKTOP) -->
+    <aside class="gp-sidebar" aria-label="Menú lateral principal">
+      <div class="space-y-3">
+        <div class="gp-sidebar-label">Operación</div>
+        <nav class="gp-sidebar-list">
+          <button type="button" onclick="switchTab('dashboard')" data-tab="dashboard" class="tab-btn active">
+            <span class="tab-left"><i class="fa-solid fa-chart-pie"></i> <span>Panel</span></span>
+          </button>
+          <button type="button" onclick="switchTab('pos')" data-tab="pos" class="tab-btn">
+            <span class="tab-left"><i class="fa-solid fa-cash-register"></i> <span>Vender (POS)</span></span>
+          </button>
+          <button type="button" onclick="switchTab('orders')" data-tab="orders" class="tab-btn">
+            <span class="tab-left"><i class="fa-solid fa-clipboard-list"></i> <span>Encargos</span></span>
+            <span id="badge-orders" class="badge badge-warn hidden">0</span>
+          </button>
+          <button type="button" onclick="switchTab('credits')" data-tab="credits" class="tab-btn">
+            <span class="tab-left"><i class="fa-solid fa-hand-holding-dollar"></i> <span>Créditos y Abonos</span></span>
+            <span id="badge-credits" class="badge badge-due hidden">0</span>
+          </button>
+          <button type="button" onclick="switchTab('incomes')" data-tab="incomes" class="tab-btn">
+            <span class="tab-left"><i class="fa-solid fa-sack-dollar"></i> <span>Dineros Recibidos</span></span>
+          </button>
+          <button type="button" onclick="switchTab('sales')" data-tab="sales" class="tab-btn">
+            <span class="tab-left"><i class="fa-solid fa-receipt"></i> <span>Historial Ventas</span></span>
+          </button>
+        </nav>
+
+        <div class="gp-sidebar-label">Catálogo y Datos</div>
+        <nav class="gp-sidebar-list">
+          <button type="button" onclick="switchTab('inventory')" data-tab="inventory" class="tab-btn">
+            <span class="tab-left"><i class="fa-solid fa-boxes-stacked"></i> <span>Inventario</span></span>
+          </button>
+          <button type="button" onclick="switchTab('clients')" data-tab="clients" class="tab-btn">
+            <span class="tab-left"><i class="fa-solid fa-users"></i> <span>Clientes</span></span>
+          </button>
+          <button type="button" onclick="switchTab('backup')" data-tab="backup" class="tab-btn">
+            <span class="tab-left"><i class="fa-solid fa-database"></i> <span>Nube / JSON</span></span>
+          </button>
+        </nav>
+      </div>
+
+      <div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:10px;font-size:11px;color:#94a3b8;">
+        <div style="font-weight:700;color:#e2e8f0;margin-bottom:2px;">Espacio Activo</div>
+        <div id="sidebar-ws-name" style="font-family:monospace;color:#a5b4fc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">control_integral_de_negocio</div>
+      </div>
+    </aside>
+
+    <!-- MOBILE MORE DRAWER -->
+    <div id="mobile-more-drawer" class="modal-backdrop hidden" onclick="toggleMobileMore(false)">
+      <div class="modal-box modal-sm" onclick="event.stopPropagation()">
+        <div class="flex items-center justify-between" style="border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:12px;">
+          <strong style="font-size:14px;">Más Módulos</strong>
+          <button type="button" onclick="toggleMobileMore(false)" class="btn btn-sm btn-light"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="grid-3">
+          <button type="button" onclick="switchTab('dashboard');toggleMobileMore(false)" class="btn btn-light" style="flex-direction:column;padding:12px;">
+            <i class="fa-solid fa-chart-pie"></i><span>Panel</span>
+          </button>
+          <button type="button" onclick="switchTab('incomes');toggleMobileMore(false)" class="btn btn-light" style="flex-direction:column;padding:12px;">
+            <i class="fa-solid fa-sack-dollar"></i><span>Recibidos</span>
+          </button>
+          <button type="button" onclick="switchTab('sales');toggleMobileMore(false)" class="btn btn-light" style="flex-direction:column;padding:12px;">
+            <i class="fa-solid fa-receipt"></i><span>Ventas</span>
+          </button>
+          <button type="button" onclick="switchTab('inventory');toggleMobileMore(false)" class="btn btn-light" style="flex-direction:column;padding:12px;">
+            <i class="fa-solid fa-boxes-stacked"></i><span>Inventario</span>
+          </button>
+          <button type="button" onclick="switchTab('clients');toggleMobileMore(false)" class="btn btn-light" style="flex-direction:column;padding:12px;">
+            <i class="fa-solid fa-users"></i><span>Clientes</span>
+          </button>
+          <button type="button" onclick="switchTab('backup');toggleMobileMore(false)" class="btn btn-light" style="flex-direction:column;padding:12px;">
+            <i class="fa-solid fa-database"></i><span>Nube/JSON</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOBILE BOTTOM NAV -->
+    <nav class="gp-nav-mobile" aria-label="Navegación móvil">
+      <button type="button" onclick="switchTab('pos')" data-mtab="pos" class="mtab-btn">
+        <i class="fa-solid fa-cash-register"></i><span>Vender</span>
+      </button>
+      <button type="button" onclick="switchTab('orders')" data-mtab="orders" class="mtab-btn">
+        <i class="fa-solid fa-clipboard-list"></i><span>Encargos</span>
+        <span id="mbadge-orders" class="badge badge-warn hidden" style="position:absolute;top:3px;right:12px;padding:1px 5px;font-size:10px;">0</span>
+      </button>
+      <button type="button" onclick="switchTab('credits')" data-mtab="credits" class="mtab-btn">
+        <i class="fa-solid fa-hand-holding-dollar"></i><span>Créditos</span>
+        <span id="mbadge-credits" class="badge badge-due hidden" style="position:absolute;top:3px;right:12px;padding:1px 5px;font-size:10px;">0</span>
+      </button>
+      <button type="button" onclick="switchTab('incomes')" data-mtab="incomes" class="mtab-btn">
+        <i class="fa-solid fa-sack-dollar"></i><span>Recibidos</span>
+      </button>
+      <button type="button" onclick="toggleMobileMore()" class="mtab-btn">
+        <i class="fa-solid fa-bars"></i><span>Más</span>
+      </button>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="gp-main-wrap">
+      <main class="gp-container" style="padding-top:18px;">
+
+        <!-- 1. DASHBOARD -->
+        <section id="view-dashboard" class="view-section space-y-5">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 style="margin:0;font-size:22px;font-weight:800;">Panel de Control</h2>
+              <p style="margin:2px 0 0;font-size:12px;color:var(--muted);">Estado en tiempo real sincronizado entre PC y celular</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" onclick="switchTab('pos')" class="btn btn-primary touch-btn"><i class="fa-solid fa-plus"></i> Nueva Venta</button>
+              <button type="button" onclick="openOrderModal()" class="btn btn-warning touch-btn"><i class="fa-solid fa-clipboard-check"></i> Nuevo Encargo</button>
+            </div>
+          </div>
+
+          <div class="grid-5">
+            <div class="card">
+              <div class="label">Dinero Recibido</div>
+              <div id="kpi-received" style="font-size:20px;font-weight:800;color:#059669;">$0.00</div>
+              <div id="kpi-received-today" style="font-size:11px;color:var(--muted);margin-top:4px;">Hoy: $0.00</div>
+            </div>
+            <div class="card">
+              <div class="label">Créditos por Cobrar</div>
+              <div id="kpi-credit-due" style="font-size:20px;font-weight:800;color:#e11d48;">$0.00</div>
+              <div id="kpi-credit-count" style="font-size:11px;color:var(--muted);margin-top:4px;">0 pendientes</div>
+            </div>
+            <div class="card">
+              <div class="label">Encargos Activos</div>
+              <div id="kpi-orders-active" style="font-size:20px;font-weight:800;color:#d97706;">0</div>
+              <div id="kpi-orders-due" style="font-size:11px;color:var(--muted);margin-top:4px;">Saldo: $0.00</div>
+            </div>
+            <div class="card">
+              <div class="label">Ventas Totales</div>
+              <div id="kpi-sales-total" style="font-size:20px;font-weight:800;">$0.00</div>
+              <div id="kpi-sales-count" style="font-size:11px;color:var(--muted);margin-top:4px;">0 ventas</div>
+            </div>
+            <div class="card">
+              <div class="label">Valor Inventario</div>
+              <div id="kpi-inv-value" style="font-size:20px;font-weight:800;color:#0284c7;">$0.00</div>
+              <div id="kpi-low-stock" style="font-size:11px;color:var(--muted);margin-top:4px;">0 bajo stock</div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card space-y-3">
+              <div class="flex items-center justify-between">
+                <strong style="font-size:14px;"><i class="fa-solid fa-triangle-exclamation" style="color:#d97706;"></i> Alertas de Stock Bajo</strong>
+                <button type="button" onclick="switchTab('inventory')" class="btn btn-sm btn-light">Ver inventario</button>
+              </div>
+              <div id="dash-low-stock-list" class="space-y-2"></div>
+            </div>
+
+            <div class="card space-y-3">
+              <div class="flex items-center justify-between">
+                <strong style="font-size:14px;"><i class="fa-solid fa-clock-rotate-left" style="color:#4f46e5;"></i> Últimas Ventas</strong>
+                <button type="button" onclick="switchTab('sales')" class="btn btn-sm btn-light">Ver historial</button>
+              </div>
+              <div id="dash-recent-sales" class="space-y-2"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. POS -->
+        <section id="view-pos" class="view-section hidden">
+          <div class="pos-layout">
+            <div class="space-y-3">
+              <div class="card">
+                <div class="flex gap-2">
+                  <input id="pos-search" type="text" oninput="renderPosCatalog()" placeholder="Buscar producto por nombre o SKU..." class="input" style="flex:1;" />
+                  <select id="pos-category-filter" onchange="renderPosCatalog()" class="select" style="width:auto;min-width:120px;">
+                    <option value="">Todas</option>
+                  </select>
+                </div>
+              </div>
+              <div id="pos-catalog-grid" class="grid-3"></div>
+            </div>
+
+            <div class="card space-y-4">
+              <div class="flex items-center justify-between" style="border-bottom:1px solid var(--border);padding-bottom:10px;">
+                <strong style="font-size:15px;"><i class="fa-solid fa-cart-shopping" style="color:#4f46e5;"></i> Carrito de Venta</strong>
+                <button type="button" onclick="clearCart()" class="btn btn-sm btn-light" style="color:#e11d48;">Vaciar</button>
+              </div>
+
+              <div class="space-y-2">
+                <label class="label">Cliente</label>
+                <div class="flex gap-2">
+                  <select id="pos-client" onchange="onPosClientChange()" class="select" style="flex:1;">
+                    <option value="">Cliente General (Mostrador)</option>
+                  </select>
+                  <button type="button" onclick="toggleQuickClientForm('pos')" class="btn btn-sm btn-light">+ Cliente Rápido</button>
+                </div>
+                <div id="pos-quick-client-box" class="hidden space-y-2" style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px;padding:10px;">
+                  <div style="font-size:12px;font-weight:700;color:#312e81;">Crear Cliente Rápido</div>
+                  <div class="grid-2">
+                    <input id="qc-pos-name" type="text" placeholder="Nombre completo *" class="input" />
+                    <input id="qc-pos-phone" type="text" placeholder="Teléfono / WhatsApp" class="input" />
+                  </div>
+                  <div class="flex justify-end gap-2">
+                    <button type="button" onclick="toggleQuickClientForm('pos', false)" class="btn btn-sm btn-light">Cancelar</button>
+                    <button type="button" onclick="saveQuickClient('pos')" class="btn btn-sm btn-primary">Guardar y Elegir</button>
+                  </div>
+                </div>
+              </div>
+
+              <div id="pos-cart-items" style="max-height:220px;overflow-y:auto;"></div>
+
+              <div class="space-y-2" style="border-top:1px solid var(--border);padding-top:10px;">
+                <label class="label">Condición de Venta</label>
+                <div class="grid-2">
+                  <button type="button" id="btn-sale-cash" onclick="setSaleType('contado')" class="btn btn-success touch-btn">Contado</button>
+                  <button type="button" id="btn-sale-credit" onclick="setSaleType('credito')" class="btn btn-light touch-btn">A Crédito</button>
+                </div>
+              </div>
+
+              <div id="pos-credit-fields" class="hidden space-y-2" style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:10px;">
+                <div id="pos-credit-client-warning" class="hidden badge badge-due" style="display:block;border-radius:8px;padding:6px;">
+                  Selecciona o crea un cliente para vender a crédito.
+                </div>
+                <div class="grid-2">
+                  <div>
+                    <label class="label">Plazo</label>
+                    <select id="pos-credit-term" onchange="updateCreditDueDate()" class="select">
+                      <option value="7">7 días</option>
+                      <option value="15">15 días</option>
+                      <option value="30" selected>30 días</option>
+                      <option value="45">45 días</option>
+                      <option value="60">60 días</option>
+                      <option value="custom">Fecha manual</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="label">Vencimiento</label>
+                    <input id="pos-credit-due" type="date" class="input" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid-2">
+                <div>
+                  <label class="label">Descuento ($)</label>
+                  <input id="pos-discount" type="number" min="0" step="0.01" value="0" oninput="recalcCartTotals()" class="input" />
+                </div>
+                <div>
+                  <label class="label">Método de Pago</label>
+                  <select id="pos-method" class="select">
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Transferencia">Transferencia</option>
+                    <option value="Tarjeta">Tarjeta</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid-2 items-center">
+                <div>
+                  <label id="pos-paid-label" class="label">Monto Recibido ($)</label>
+                  <input id="pos-paid" type="number" min="0" step="0.01" value="0" oninput="recalcCartTotals()" class="input" style="font-weight:700;" />
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px;text-align:right;">
+                  <div style="font-size:11px;color:var(--muted);">Total a Pagar</div>
+                  <div id="pos-total" style="font-size:20px;font-weight:800;color:#4f46e5;">$0.00</div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between" style="font-size:12px;font-weight:700;">
+                <span id="pos-balance-label">Cambio / Vuelto:</span>
+                <span id="pos-balance-value" style="color:#059669;font-size:14px;">$0.00</span>
+              </div>
+
+              <button type="button" onclick="completeSale()" class="btn btn-success touch-btn" style="width:100%;">
+                <i class="fa-solid fa-check-circle"></i> Finalizar Venta
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. ENCARGOS -->
+        <section id="view-orders" class="view-section hidden space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 style="margin:0;font-size:20px;font-weight:800;">Encargos y Pedidos</h2>
+              <p style="margin:2px 0 0;font-size:12px;color:var(--muted);">Pedidos con anticipo, control de entrega y exportación Excel</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" onclick="exportOrdersExcel('xls')" class="btn btn-success touch-btn"><i class="fa-solid fa-file-excel"></i> Excel (.xls)</button>
+              <button type="button" onclick="exportOrdersExcel('csv')" class="btn btn-light touch-btn"><i class="fa-solid fa-file-csv"></i> CSV Excel</button>
+              <button type="button" onclick="openOrderModal()" class="btn btn-primary touch-btn"><i class="fa-solid fa-plus"></i> Nuevo Encargo</button>
+            </div>
+          </div>
+
+          <div class="grid-5" style="grid-template-columns:repeat(2,1fr);">
+            <div class="card"><div class="label">Encargos Activos</div><div id="ord-kpi-active" style="font-size:20px;font-weight:800;color:#4f46e5;">0</div></div>
+            <div class="card"><div class="label">Entregas Hoy / Vencidas</div><div id="ord-kpi-urgent" style="font-size:20px;font-weight:800;color:#d97706;">0</div></div>
+            <div class="card"><div class="label">Anticipos Recibidos</div><div id="ord-kpi-paid" style="font-size:20px;font-weight:800;color:#059669;">$0.00</div></div>
+            <div class="card"><div class="label">Saldo por Cobrar</div><div id="ord-kpi-due" style="font-size:20px;font-weight:800;color:#e11d48;">$0.00</div></div>
+          </div>
+
+          <div class="card">
+            <div class="flex flex-wrap gap-2">
+              <input id="ord-search" type="text" oninput="renderOrders()" placeholder="Buscar por # encargo, cliente o artículo..." class="input" style="flex:1;min-width:200px;" />
+              <select id="ord-status-filter" onchange="renderOrders()" class="select" style="width:auto;">
+                <option value="active">Activos (No entregados)</option>
+                <option value="all">Todos los estados</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="En Preparación">En Preparación</option>
+                <option value="Listo para Entrega">Listo para Entrega</option>
+                <option value="Entregado">Entregado</option>
+                <option value="Cancelado">Cancelado</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="orders-list-container" class="grid-2"></div>
+        </section>
+
+        <!-- 4. CRÉDITOS Y ABONOS -->
+        <section id="view-credits" class="view-section hidden space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 style="margin:0;font-size:20px;font-weight:800;">Créditos y Abonos</h2>
+              <p style="margin:2px 0 0;font-size:12px;color:var(--muted);">Cuentas por cobrar, saldos por cliente y registro de abonos</p>
+            </div>
+            <button type="button" onclick="openAbonoModal()" class="btn btn-success touch-btn"><i class="fa-solid fa-hand-holding-dollar"></i> Registrar Abono</button>
+          </div>
+
+          <div class="grid-2">
+            <div class="card"><div class="label">Total Vendido a Crédito</div><div id="cred-kpi-total" style="font-size:20px;font-weight:800;">$0.00</div></div>
+            <div class="card"><div class="label">Total Abonado</div><div id="cred-kpi-paid" style="font-size:20px;font-weight:800;color:#059669;">$0.00</div></div>
+            <div class="card"><div class="label">Saldo Pendiente</div><div id="cred-kpi-due" style="font-size:20px;font-weight:800;color:#e11d48;">$0.00</div></div>
+            <div class="card"><div class="label">Créditos Vencidos</div><div id="cred-kpi-overdue" style="font-size:20px;font-weight:800;color:#d97706;">0</div></div>
+          </div>
+
+          <div class="card">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex gap-2">
+                <button type="button" id="cred-tab-invoices" onclick="setCreditViewMode('invoices')" class="btn btn-sm btn-primary">Detalle por Venta</button>
+                <button type="button" id="cred-tab-clients" onclick="setCreditViewMode('clients')" class="btn btn-sm btn-light">Resumen por Cliente</button>
+              </div>
+              <input id="cred-search" type="text" oninput="renderCredits()" placeholder="Buscar cliente o folio..." class="input" style="max-width:260px;" />
+            </div>
+          </div>
+
+          <div id="credits-content-area" class="space-y-3"></div>
+        </section>
+
+        <!-- 5. DINEROS RECIBIDOS -->
+        <section id="view-incomes" class="view-section hidden space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 style="margin:0;font-size:20px;font-weight:800;">Dineros Recibidos</h2>
+              <p style="margin:2px 0 0;font-size:12px;color:var(--muted);">Detalle y resumen de ingresos por ventas, abonos, anticipos y cobros directos</p>
+            </div>
+            <button type="button" onclick="openIncomeModal()" class="btn btn-success touch-btn"><i class="fa-solid fa-plus"></i> Registrar Dinero Recibido</button>
+          </div>
+
+          <div class="grid-2">
+            <div class="card"><div class="label">Recibido Hoy</div><div id="inc-kpi-today" style="font-size:20px;font-weight:800;color:#059669;">$0.00</div></div>
+            <div class="card"><div class="label">Este Mes</div><div id="inc-kpi-month" style="font-size:20px;font-weight:800;color:#4f46e5;">$0.00</div></div>
+            <div class="card"><div class="label">Total Histórico</div><div id="inc-kpi-total" style="font-size:20px;font-weight:800;">$0.00</div></div>
+            <div class="card"><div class="label">Por Cobrar Total</div><div id="inc-kpi-pending" style="font-size:20px;font-weight:800;color:#e11d48;">$0.00</div></div>
+          </div>
+
+          <div class="card space-y-2">
+            <div class="label">Resumen por Método de Pago</div>
+            <div id="inc-method-summary" class="grid-2"></div>
+          </div>
+
+          <div class="card">
+            <div class="flex flex-wrap gap-2">
+              <input id="inc-search" type="text" oninput="renderIncomes()" placeholder="Buscar recibo, cliente o concepto..." class="input" style="flex:1;min-width:200px;" />
+              <select id="inc-type-filter" onchange="renderIncomes()" class="select" style="width:auto;">
+                <option value="">Todos los tipos</option>
+                <option value="Venta Contado">Venta Contado</option>
+                <option value="Abono Crédito">Abono Crédito</option>
+                <option value="Anticipo Encargo">Anticipo Encargo</option>
+                <option value="Ingreso Directo">Ingreso Directo</option>
+              </select>
+              <select id="inc-method-filter" onchange="renderIncomes()" class="select" style="width:auto;">
+                <option value="">Todos los métodos</option>
+                <option value="Efectivo">Efectivo</option>
+                <option value="Transferencia">Transferencia</option>
+                <option value="Tarjeta">Tarjeta</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card table-wrap" style="padding:0;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Recibo / Fecha</th>
+                  <th>Cliente</th>
+                  <th>Tipo / Concepto</th>
+                  <th>Método</th>
+                  <th class="text-right">Monto</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="incomes-table-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 6. HISTORIAL VENTAS -->
+        <section id="view-sales" class="view-section hidden space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 style="margin:0;font-size:20px;font-weight:800;">Historial de Ventas</h2>
+            <input id="sales-search" type="text" oninput="renderSalesHistory()" placeholder="Buscar folio o cliente..." class="input" style="max-width:280px;" />
+          </div>
+          <div class="card table-wrap" style="padding:0;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Folio / Fecha</th>
+                  <th>Cliente</th>
+                  <th>Condición</th>
+                  <th class="text-right">Total</th>
+                  <th class="text-right">Pagado</th>
+                  <th class="text-right">Saldo</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="sales-table-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 7. INVENTARIO -->
+        <section id="view-inventory" class="view-section hidden space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 style="margin:0;font-size:20px;font-weight:800;">Inventario</h2>
+              <p style="margin:2px 0 0;font-size:12px;color:var(--muted);">Productos, precios, stock y alertas de reposición</p>
+            </div>
+            <button type="button" onclick="openProductModal()" class="btn btn-primary touch-btn"><i class="fa-solid fa-plus"></i> Nuevo Producto</button>
+          </div>
+
+          <div class="card">
+            <div class="flex flex-wrap items-center gap-3">
+              <input id="inv-search" type="text" oninput="renderInventory()" placeholder="Buscar por nombre, SKU o categoría..." class="input" style="flex:1;min-width:200px;" />
+              <label class="flex items-center gap-2" style="font-size:12px;font-weight:700;">
+                <input id="inv-low-only" type="checkbox" onchange="renderInventory()" /> Solo stock bajo
+              </label>
+            </div>
+          </div>
+
+          <div class="card table-wrap" style="padding:0;">
+            <table>
+              <thead>
+                <tr>
+                  <th>SKU / Producto</th>
+                  <th>Categoría</th>
+                  <th class="text-right">Costo</th>
+                  <th class="text-right">Precio Venta</th>
+                  <th class="text-center">Stock</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-table-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 8. CLIENTES -->
+        <section id="view-clients" class="view-section hidden space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 style="margin:0;font-size:20px;font-weight:800;">Clientes</h2>
+              <p style="margin:2px 0 0;font-size:12px;color:var(--muted);">Directorio de clientes, créditos y encargos activos</p>
+            </div>
+            <button type="button" onclick="openClientModal()" class="btn btn-primary touch-btn"><i class="fa-solid fa-user-plus"></i> Nuevo Cliente</button>
+          </div>
+          <input id="cli-search" type="text" oninput="renderClients()" placeholder="Buscar cliente por nombre o teléfono..." class="input" style="max-width:340px;" />
+          <div id="clients-grid" class="grid-3"></div>
+        </section>
+
+        <!-- 9. NUBE / RESPALDO JSON -->
+        <section id="view-backup" class="view-section hidden space-y-5">
+          <div>
+            <h2 style="margin:0;font-size:20px;font-weight:800;">Sincronización en Línea y Respaldo JSON</h2>
+            <p style="margin:2px 0 0;font-size:12px;color:var(--muted);">Conecta tu PC Windows y tu celular Android al mismo espacio compartido</p>
+          </div>
+
+          <div class="grid-2">
+            <div class="card space-y-4">
+              <div class="flex items-center justify-between">
+                <strong style="font-size:15px;"><i class="fa-solid fa-cloud" style="color:#4f46e5;"></i> Espacio Compartido en Línea</strong>
+                <span id="backup-conn-badge" class="badge badge-ok">En línea</span>
+              </div>
+              <p style="margin:0;font-size:12px;color:var(--muted);">
+                Usa el mismo <strong>Código de Negocio</strong> en ambos dispositivos para sincronizar ventas, encargos, abonos e inventario automáticamente.
+              </p>
+              <div>
+                <label class="label">Código de Espacio / Negocio</label>
+                <div class="flex gap-2">
+                  <input id="workspace-id-input" type="text" class="input" style="font-family:monospace;font-weight:700;" />
+                  <button type="button" onclick="saveWorkspaceId()" class="btn btn-primary">Conectar</button>
+                </div>
+              </div>
+              <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:12px;" class="space-y-2">
+                <div style="font-size:12px;font-weight:700;">Enlace Directo para Celular</div>
+                <div class="flex gap-2">
+                  <input id="share-workspace-url" type="text" readonly class="input" style="font-family:monospace;font-size:11px;" />
+                  <button type="button" onclick="copyWorkspaceUrl()" class="btn btn-sm btn-light">Copiar</button>
+                </div>
+              </div>
+              <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:12px;" class="space-y-2">
+                <div style="font-size:12px;font-weight:700;">Endpoint / Credenciales JSON (Firebase o REST)</div>
+                <input id="cloud-endpoint-input" type="url" placeholder="URL Firebase Realtime DB o endpoint JSON / REST" class="input" style="font-size:12px;" />
+                <input id="cloud-apikey-input" type="password" placeholder="Clave API / Secret / Token (opcional)" class="input" style="font-size:12px;" />
+                <textarea id="cloud-json-creds-input" rows="3" placeholder='Opcional: pega aquí tu JSON de credenciales (ej. {"databaseURL":"https://...","secret":"..."})' class="textarea" style="font-size:11px;font-family:monospace;"></textarea>
+                <div class="flex gap-2">
+                  <button type="button" onclick="applyJsonCredentialsPaste()" class="btn btn-sm btn-light" style="flex:1;">Cargar JSON</button>
+                  <button type="button" onclick="saveCloudSettings()" class="btn btn-sm btn-primary" style="flex:1;">Guardar y Sincronizar</button>
+                </div>
+                <label class="flex items-center gap-2" style="font-size:12px;font-weight:600;">
+                  <input id="cloud-autosync-check" type="checkbox" checked /> Sincronización automática en segundo plano
+                </label>
+              </div>
+              <button type="button" onclick="forceCloudSyncNow()" class="btn btn-light" style="width:100%;">
+                <i class="fa-solid fa-rotate"></i> Forzar Sincronización Ahora
+              </button>
+            </div>
+
+            <div class="card space-y-4">
+              <strong style="font-size:15px;"><i class="fa-solid fa-file-code" style="color:#059669;"></i> Respaldo y Restauración JSON</strong>
+              <p style="margin:0;font-size:12px;color:var(--muted);">
+                Descarga toda tu base de datos en un archivo <code>.json</code> o restaura un respaldo anterior.
+              </p>
+              <div class="grid-3" style="text-align:center;">
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:8px;">
+                  <div id="bk-count-products" style="font-weight:800;font-size:16px;">0</div>
+                  <div style="font-size:11px;color:var(--muted);">Productos</div>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:8px;">
+                  <div id="bk-count-sales" style="font-weight:800;font-size:16px;">0</div>
+                  <div style="font-size:11px;color:var(--muted);">Ventas</div>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:8px;">
+                  <div id="bk-count-orders" style="font-weight:800;font-size:16px;">0</div>
+                  <div style="font-size:11px;color:var(--muted);">Encargos</div>
+                </div>
+              </div>
+              <button type="button" onclick="exportFullJSON()" class="btn btn-success touch-btn" style="width:100%;">
+                <i class="fa-solid fa-download"></i> Descargar Respaldo Completo (.json)
+              </button>
+              <div style="border-top:1px solid var(--border);padding-top:12px;" class="space-y-2">
+                <label class="label">Restaurar archivo JSON</label>
+                <input id="json-import-file" type="file" accept=".json" onchange="previewImportJSON(event)" class="input" />
+                <div id="json-import-preview" class="hidden space-y-2" style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px;">
+                  <div id="json-import-summary" style="font-size:12px;font-weight:700;"></div>
+                  <button type="button" onclick="confirmImportJSON()" class="btn btn-sm btn-warning">Confirmar y Restaurar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <div id="modal-order" class="modal-backdrop hidden">
+    <div class="modal-box space-y-4">
+      <div class="flex items-center justify-between" style="border-bottom:1px solid var(--border);padding-bottom:10px;">
+        <strong id="modal-order-title" style="font-size:16px;">Nuevo Encargo</strong>
+        <button type="button" onclick="closeModal('modal-order')" class="btn btn-sm btn-light"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <input type="hidden" id="ord-edit-id" />
+      <div class="grid-2">
+        <div>
+          <label class="label">Cliente *</label>
+          <div class="flex gap-2">
+            <select id="ord-client" class="select" style="flex:1;"></select>
+            <button type="button" onclick="toggleQuickClientForm('order')" class="btn btn-sm btn-light">+ Nuevo</button>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div><label class="label">Fecha Encargo</label><input id="ord-date" type="date" class="input" /></div>
+          <div><label class="label">Fecha Entrega *</label><input id="ord-delivery-date" type="date" class="input" /></div>
+        </div>
+      </div>
+      <div id="order-quick-client-box" class="hidden space-y-2" style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px;padding:10px;">
+        <div class="grid-2">
+          <input id="qc-order-name" type="text" placeholder="Nombre cliente *" class="input" />
+          <input id="qc-order-phone" type="text" placeholder="Teléfono" class="input" />
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="toggleQuickClientForm('order', false)" class="btn btn-sm btn-light">Cancelar</button>
+          <button type="button" onclick="saveQuickClient('order')" class="btn btn-sm btn-primary">Guardar</button>
+        </div>
+      </div>
+
+      <div class="space-y-2" style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:12px;">
+        <div class="label">Artículos del Encargo</div>
+        <div class="flex flex-wrap gap-2">
+          <select id="ord-product-pick" onchange="onOrderProductPick()" class="select" style="flex:1;min-width:160px;"></select>
+          <input id="ord-item-name" type="text" placeholder="Descripción *" class="input" style="flex:1;min-width:150px;" />
+          <input id="ord-item-qty" type="number" min="1" value="1" class="input" style="width:72px;" />
+          <input id="ord-item-price" type="number" min="0" step="0.01" placeholder="Precio" class="input" style="width:105px;" />
+          <button type="button" onclick="addOrderDraftItem()" class="btn btn-sm btn-primary">+ Ítem</button>
+        </div>
+        <label class="flex items-center gap-2" style="font-size:12px;color:var(--muted);">
+          <input id="ord-reserve-stock" type="checkbox" checked /> Descontar stock si es producto de inventario
+        </label>
+        <div id="ord-draft-items" class="space-y-1"></div>
+      </div>
+
+      <div class="grid-3">
+        <div>
+          <label class="label">Estado</label>
+          <select id="ord-status" class="select">
+            <option value="Pendiente">Pendiente</option>
+            <option value="En Preparación">En Preparación</option>
+            <option value="Listo para Entrega">Listo para Entrega</option>
+            <option value="Entregado">Entregado</option>
+            <option value="Cancelado">Cancelado</option>
+          </select>
+        </div>
+        <div>
+          <label class="label">Anticipo Inicial ($)</label>
+          <input id="ord-deposit" type="number" min="0" step="0.01" value="0" oninput="recalcOrderDraft()" class="input" />
+        </div>
+        <div>
+          <label class="label">Método Anticipo</label>
+          <select id="ord-method" class="select">
+            <option value="Efectivo">Efectivo</option>
+            <option value="Transferencia">Transferencia</option>
+            <option value="Tarjeta">Tarjeta</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="label">Notas</label>
+        <input id="ord-notes" type="text" placeholder="Detalles, medidas, dirección..." class="input" />
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-2" style="background:#0f172a;color:#fff;border-radius:12px;padding:12px;font-size:13px;">
+        <span>Total: <strong id="ord-draft-total">$0.00</strong></span>
+        <span>Anticipo: <strong id="ord-draft-paid" style="color:#34d399;">$0.00</strong></span>
+        <span>Saldo: <strong id="ord-draft-balance" style="color:#fbbf24;">$0.00</strong></span>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" onclick="closeModal('modal-order')" class="btn btn-light">Cancelar</button>
+        <button type="button" onclick="saveOrder()" class="btn btn-primary">Guardar Encargo</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-abono" class="modal-backdrop hidden">
+    <div class="modal-box modal-sm space-y-3">
+      <div class="flex items-center justify-between" style="border-bottom:1px solid var(--border);padding-bottom:10px;">
+        <strong style="font-size:15px;">Registrar Abono</strong>
+        <button type="button" onclick="closeModal('modal-abono')" class="btn btn-sm btn-light"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div>
+        <label class="label">Tipo de Cuenta</label>
+        <select id="abono-target-type" onchange="populateAbonoTargets()" class="select">
+          <option value="sale">Venta a Crédito Pendiente</option>
+          <option value="order">Encargo con Saldo Pendiente</option>
+        </select>
+      </div>
+      <div>
+        <label class="label">Cuenta / Cliente *</label>
+        <select id="abono-target-id" onchange="onAbonoTargetChange()" class="select"></select>
+      </div>
+      <div class="flex items-center justify-between" style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:10px;font-size:12px;">
+        <span>Saldo Actual:</span>
+        <strong id="abono-current-due" style="color:#e11d48;font-size:15px;">$0.00</strong>
+      </div>
+      <div>
+        <div class="flex items-center justify-between">
+          <label class="label">Monto del Abono ($) *</label>
+          <button type="button" onclick="fillFullAbono()" class="btn btn-sm btn-light" style="padding:2px 8px;font-size:11px;">Saldo Completo</button>
+        </div>
+        <input id="abono-amount" type="number" min="0.01" step="0.01" oninput="updateAbonoRemaining()" class="input" style="font-weight:800;color:#059669;" />
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Nuevo saldo: <strong id="abono-new-due">$0.00</strong></div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label class="label">Método</label>
+          <select id="abono-method" class="select">
+            <option value="Efectivo">Efectivo</option>
+            <option value="Transferencia">Transferencia</option>
+            <option value="Tarjeta">Tarjeta</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div><label class="label">Fecha</label><input id="abono-date" type="date" class="input" /></div>
+      </div>
+      <div>
+        <label class="label">Nota / Referencia</label>
+        <input id="abono-note" type="text" placeholder="Opcional" class="input" />
+      </div>
+      <div class="flex justify-end gap-2">
+        <button type="button" onclick="closeModal('modal-abono')" class="btn btn-light">Cancelar</button>
+        <button type="button" onclick="saveAbono()" class="btn btn-success">Guardar Abono</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-income" class="modal-backdrop hidden">
+    <div class="modal-box modal-sm space-y-3">
+      <div class="flex items-center justify-between" style="border-bottom:1px solid var(--border);padding-bottom:10px;">
+        <strong style="font-size:15px;">Registrar Dinero Recibido</strong>
+        <button type="button" onclick="closeModal('modal-income')" class="btn btn-sm btn-light"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div><label class="label">Concepto *</label><input id="inc-concept" type="text" placeholder="Ej. Cobro servicio, venta directa..." class="input" /></div>
+      <div class="grid-2">
+        <div><label class="label">Monto ($) *</label><input id="inc-amount" type="number" min="0.01" step="0.01" class="input" /></div>
+        <div>
+          <label class="label">Método</label>
+          <select id="inc-method" class="select">
+            <option value="Efectivo">Efectivo</option>
+            <option value="Transferencia">Transferencia</option>
+            <option value="Tarjeta">Tarjeta</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div><label class="label">Cliente</label><select id="inc-client" class="select"></select></div>
+        <div><label class="label">Fecha</label><input id="inc-date" type="date" class="input" /></div>
+      </div>
+      <div class="flex justify-end gap-2">
+        <button type="button" onclick="closeModal('modal-income')" class="btn btn-light">Cancelar</button>
+        <button type="button" onclick="saveDirectIncome()" class="btn btn-success">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-product" class="modal-backdrop hidden">
+    <div class="modal-box modal-sm space-y-3">
+      <div class="flex items-center justify-between" style="border-bottom:1px solid var(--border);padding-bottom:10px;">
+        <strong id="modal-prod-title" style="font-size:15px;">Producto</strong>
+        <button type="button" onclick="closeModal('modal-product')" class="btn btn-sm btn-light"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <input type="hidden" id="prod-edit-id" />
+      <div><label class="label">Nombre *</label><input id="prod-name" type="text" class="input" /></div>
+      <div class="grid-2">
+        <div><label class="label">SKU</label><input id="prod-sku" type="text" class="input" /></div>
+        <div><label class="label">Categoría</label><input id="prod-category" type="text" class="input" /></div>
+      </div>
+      <div class="grid-2">
+        <div><label class="label">Costo ($)</label><input id="prod-cost" type="number" min="0" step="0.01" class="input" /></div>
+        <div><label class="label">Precio Venta ($) *</label><input id="prod-price" type="number" min="0" step="0.01" class="input" /></div>
+      </div>
+      <div class="grid-2">
+        <div><label class="label">Stock *</label><input id="prod-stock" type="number" min="0" class="input" /></div>
+        <div><label class="label">Stock Mínimo</label><input id="prod-min-stock" type="number" min="0" class="input" /></div>
+      </div>
+      <div class="flex justify-end gap-2">
+        <button type="button" onclick="closeModal('modal-product')" class="btn btn-light">Cancelar</button>
+        <button type="button" onclick="saveProduct()" class="btn btn-primary">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-client" class="modal-backdrop hidden">
+    <div class="modal-box modal-sm space-y-3">
+      <div class="flex items-center justify-between" style="border-bottom:1px solid var(--border);padding-bottom:10px;">
+        <strong id="modal-cli-title" style="font-size:15px;">Cliente</strong>
+        <button type="button" onclick="closeModal('modal-client')" class="btn btn-sm btn-light"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <input type="hidden" id="cli-edit-id" />
+      <div><label class="label">Nombre Completo *</label><input id="cli-name" type="text" class="input" /></div>
+      <div class="grid-2">
+        <div><label class="label">Teléfono</label><input id="cli-phone" type="text" class="input" /></div>
+        <div><label class="label">Correo</label><input id="cli-email" type="email" class="input" /></div>
+      </div>
+      <div><label class="label">Dirección</label><input id="cli-address" type="text" class="input" /></div>
+      <div class="flex justify-end gap-2">
+        <button type="button" onclick="closeModal('modal-client')" class="btn btn-light">Cancelar</button>
+        <button type="button" onclick="saveClient()" class="btn btn-primary">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-receipt" class="modal-backdrop hidden">
+    <div class="modal-box modal-sm space-y-4">
+      <div id="print-area" class="space-y-2" style="font-size:13px;"></div>
+      <div class="flex justify-end gap-2" style="border-top:1px solid var(--border);padding-top:12px;">
+        <button type="button" onclick="closeModal('modal-receipt')" class="btn btn-light">Cerrar</button>
+        <button type="button" onclick="window.print()" class="btn btn-primary"><i class="fa-solid fa-print"></i> Imprimir</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-confirm" class="modal-backdrop hidden">
+    <div class="modal-box modal-sm space-y-3">
+      <strong id="confirm-title" style="font-size:15px;">Confirmar</strong>
+      <p id="confirm-message" style="margin:0;font-size:12px;color:var(--muted);"></p>
+      <div class="flex justify-end gap-2">
+        <button type="button" onclick="closeModal('modal-confirm')" class="btn btn-sm btn-light">Cancelar</button>
+        <button type="button" id="confirm-yes-btn" class="btn btn-sm btn-danger">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="hidden"></div>
+
+  <script>
+    (function () {
+      const COLLECTIONS = ["products", "clients", "sales", "incomes", "credits", "orders"];
+      const STATE = { products: [], clients: [], sales: [], incomes: [], credits: [], orders: [] };
+
+      let cart = [];
+      let saleType = "contado";
+      let creditViewMode = "invoices";
+      let orderDraftItems = [];
+      let pendingImportData = null;
+      let deferredInstallPrompt = null;
+
+      window.addEventListener("beforeinstallprompt", function (e) {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        const txt = document.getElementById("install-app-text");
+        if (txt) txt.textContent = "Instalar";
+      });
+
+      window.triggerInstallApp = function () {
+        if (deferredInstallPrompt) {
+          deferredInstallPrompt.prompt();
+          deferredInstallPrompt.userChoice.then(function () {
+            deferredInstallPrompt = null;
+          });
+          return;
+        }
+        showToast("Usa el menú del navegador → Agregar a pantalla principal / Instalar app");
+      };
+
+      function getWorkspaceId() {
+        const params = new URLSearchParams(window.location.search);
+        const urlWs = params.get("ws");
+        if (urlWs && urlWs.trim()) {
+          const clean = urlWs.trim().replace(/[^a-zA-Z0-9_-]/g, "_");
+          localStorage.setItem("gp_workspace_id", clean);
+          return clean;
+        }
+        return localStorage.getItem("gp_workspace_id") || "control_integral_de_negocio";
+      }
+
+      let currentWorkspaceId = getWorkspaceId();
+
+      function cacheKey(col) {
+        return "gp_" + currentWorkspaceId + "_" + col;
+      }
+
+      function loadLocalCache() {
+        COLLECTIONS.forEach(function (col) {
+          try {
+            const raw = localStorage.getItem(cacheKey(col));
+            STATE[col] = raw ? JSON.parse(raw) : [];
+          } catch (e) {
+            STATE[col] = [];
+          }
+        });
+        if (STATE.products.length === 0 && !localStorage.getItem("gp_seeded_" + currentWorkspaceId)) {
+          localStorage.setItem("gp_seeded_" + currentWorkspaceId, "1");
+          STATE.products = [
+            { id: "prod_1", sku: "SKU-001", name: "Producto Estándar A", category: "General", cost: 10, price: 18, stock: 25, minStock: 5 },
+            { id: "prod_2", sku: "SKU-002", name: "Artículo Premium B", category: "Destacados", cost: 22, price: 35, stock: 12, minStock: 4 },
+            { id: "prod_3", sku: "SKU-003", name: "Accesorio Básico C", category: "Accesorios", cost: 5, price: 9.5, stock: 3, minStock: 5 }
+          ];
+          STATE.clients = [
+            { id: "cli_1", name: "María González", phone: "+56 9 8765 4321", email: "maria@ejemplo.com", address: "Av. Central 123" }
+          ];
+          COLLECTIONS.forEach(saveLocalCache);
+        }
+      }
+
+      function saveLocalCache(col) {
+        try {
+          localStorage.setItem(cacheKey(col), JSON.stringify(STATE[col]));
+        } catch (e) {}
+      }
+
+      function setSyncStatus(mode, text) {
+        const dot = document.getElementById("sync-dot");
+        const label = document.getElementById("sync-label");
+        const badge = document.getElementById("backup-conn-badge");
+        if (label) label.textContent = text;
+        if (dot) {
+          dot.style.background = mode === "online" ? "#34d399" : (mode === "syncing" ? "#fbbf24" : "#38bdf8");
+        }
+        if (badge) {
+          badge.className = "badge " + (mode === "online" ? "badge-ok" : "badge-info");
+          badge.textContent = text;
+        }
+      }
+
+      function getCloudConfig() {
+        try {
+          const raw = localStorage.getItem("gp_cloud_config_" + currentWorkspaceId);
+          return raw ? JSON.parse(raw) : { endpoint: "", apiKey: "", autoSync: true };
+        } catch (e) {
+          return { endpoint: "", apiKey: "", autoSync: true };
+        }
+      }
+
+      function saveCloudConfig(cfg) {
+        try {
+          localStorage.setItem("gp_cloud_config_" + currentWorkspaceId, JSON.stringify(cfg));
+        } catch (e) {}
+      }
+
+      function getMetaKey() {
+        return "gp_" + currentWorkspaceId + "_updatedAt";
+      }
+
+      function getUpdatedAt() {
+        return Number(localStorage.getItem(getMetaKey()) || "0") || 0;
+      }
+
+      function setUpdatedAt(ts) {
+        const val = Number(ts) || Date.now();
+        localStorage.setItem(getMetaKey(), String(val));
+        return val;
+      }
+
+      function getCloudEndpoint() {
+        const cfg = getCloudConfig();
+        if (cfg.endpoint && cfg.endpoint.trim()) return cfg.endpoint.trim();
+        const bucketKey = "gp_bucket_url_" + currentWorkspaceId;
+        return localStorage.getItem(bucketKey) || "";
+      }
+
+      function setCloudBucketUrl(url) {
+        if (url && url.trim()) {
+          localStorage.setItem("gp_bucket_url_" + currentWorkspaceId, url.trim());
+        }
+      }
+
+      function snapshotPayload(ts) {
+        return {
+          app: "GestorPro",
+          workspaceId: currentWorkspaceId,
+          updatedAt: ts || getUpdatedAt() || Date.now(),
+          data: {
+            products: STATE.products,
+            clients: STATE.clients,
+            sales: STATE.sales,
+            incomes: STATE.incomes,
+            credits: STATE.credits,
+            orders: STATE.orders
+          }
+        };
+      }
+
+      function applyIncomingPayload(payload) {
+        if (!payload) return false;
+        const d = payload.data || payload;
+        const incomingTs = Number(payload.updatedAt || d.updatedAt || 0) || 0;
+        const localTs = getUpdatedAt();
+        if (incomingTs > 0 && localTs > 0 && incomingTs <= localTs) {
+          return false;
+        }
+        let changed = false;
+        COLLECTIONS.forEach(function (col) {
+          if (Array.isArray(d[col])) {
+            STATE[col] = d[col];
+            saveLocalCache(col);
+            changed = true;
+          }
+        });
+        if (changed) {
+          setUpdatedAt(incomingTs || Date.now());
+          refreshAllViews();
+        }
+        return changed;
+      }
+
+      const bc = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel("gp_channel_" + currentWorkspaceId) : null;
+      if (bc) {
+        bc.onmessage = function (ev) {
+          if (ev.data && ev.data.type === "state_sync" && ev.data.workspaceId === currentWorkspaceId && ev.data.data) {
+            applyIncomingPayload(ev.data);
+          }
+        };
+      }
+
+      window.addEventListener("storage", function (ev) {
+        if (ev.key && ev.key.indexOf("gp_" + currentWorkspaceId + "_") === 0) {
+          loadLocalCache();
+          pullFromRemoteCloud(true);
+          refreshAllViews();
+        }
+      });
+
+      function broadcastState() {
+        if (bc) {
+          try { bc.postMessage({ type: "state_sync", workspaceId: currentWorkspaceId, updatedAt: getUpdatedAt(), data: STATE }); } catch (e) {}
+        }
+      }
+
+      let isSyncingNow = false;
+
+      async function provisionBucketIfNeeded() {
+        let url = getCloudEndpoint();
+        if (url) return url;
+        if (!navigator.onLine) return "";
+        try {
+          const resp = await fetch("https://api.keyvalue.xyz/new/" + encodeURIComponent("gp_" + currentWorkspaceId), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(snapshotPayload(Date.now()))
+          });
+          if (resp.ok) {
+            const txt = (await resp.text()).trim();
+            if (txt.indexOf("http") === 0) {
+              setCloudBucketUrl(txt);
+              return txt;
+            }
+          }
+        } catch (e) {}
+        return "";
+      }
+
+      async function pushToRemoteCloud(force) {
+        const cfg = getCloudConfig();
+        if (!force && cfg.autoSync === false) return;
+        const ts = setUpdatedAt(Date.now());
+        broadcastState();
+
+        if (!navigator.onLine) {
+          setSyncStatus("local", "Local · " + currentWorkspaceId);
+          return;
+        }
+
+        let url = getCloudEndpoint();
+        if (!url) {
+          url = await provisionBucketIfNeeded();
+        }
+        if (!url) {
+          setSyncStatus("local", "Local · " + currentWorkspaceId);
+          return;
+        }
+
+        isSyncingNow = true;
+        setSyncStatus("syncing", "Subiendo · " + currentWorkspaceId);
+        try {
+          const target = normalizeCloudTarget(url, cfg.apiKey);
+          const resp = await fetch(target.url, {
+            method: "PUT",
+            headers: target.headers,
+            body: JSON.stringify(snapshotPayload(ts))
+          });
+          if (resp.ok) {
+            const hm = new Date().toTimeString().slice(0, 5);
+            setSyncStatus("online", "Nube " + hm + " · " + currentWorkspaceId);
+          } else {
+            setSyncStatus("local", "Local · " + currentWorkspaceId);
+          }
+        } catch (err) {
+          setSyncStatus("local", "Local · " + currentWorkspaceId);
+        } finally {
+          isSyncingNow = false;
+        }
+      }
+
+      async function pullFromRemoteCloud(quiet) {
+        if (!navigator.onLine || isSyncingNow) return;
+        const url = getCloudEndpoint();
+        if (!url) return;
+
+        const cfg = getCloudConfig();
+        try {
+          const target = normalizeCloudTarget(url, cfg.apiKey);
+          const pullHeaders = Object.assign({}, target.headers);
+          delete pullHeaders["Content-Type"];
+          const resp = await fetch(target.url, { method: "GET", headers: pullHeaders, cache: "no-store" });
+          if (!resp.ok) return;
+          const remote = await resp.json();
+          const changed = applyIncomingPayload(remote);
+          const hm = new Date().toTimeString().slice(0, 5);
+          setSyncStatus("online", "Nube " + hm + " · " + currentWorkspaceId);
+          if (changed && !quiet) {
+            showToast("Datos sincronizados desde la nube");
+          }
+        } catch (err) {
+          // Keep working smoothly with local cache
+        }
+      }
+
+      window.forceCloudSyncNow = async function () {
+        if (!navigator.onLine) {
+          return showToast("Sin conexión a internet. Guardado en dispositivo.");
+        }
+        await pullFromRemoteCloud(true);
+        await pushToRemoteCloud(true);
+        refreshAllViews();
+        showToast("Sincronización en línea completada");
+      };
+
+      function normalizeCloudTarget(endpoint, apiKey) {
+        let ep = (endpoint || "").trim();
+        const key = (apiKey || "").trim();
+        if (!ep) return { url: "", headers: {} };
+
+        if (ep.indexOf("firebaseio.com") >= 0 || ep.indexOf("firebasedatabase.app") >= 0) {
+          ep = ep.replace(/\/+$/, "");
+          if (!/\.json(\?|$)/.test(ep)) {
+            const nodePath = "/gestorpro_workspaces/" + encodeURIComponent(currentWorkspaceId) + ".json";
+            ep = ep + nodePath;
+          }
+          if (key && ep.indexOf("auth=") === -1) {
+            ep += (ep.indexOf("?") >= 0 ? "&" : "?") + "auth=" + encodeURIComponent(key);
+          }
+          return { url: ep, headers: { "Content-Type": "application/json" } };
+        }
+
+        const headers = { "Content-Type": "application/json" };
+        if (key) {
+          headers["Authorization"] = "Bearer " + key;
+          headers["X-API-Key"] = key;
+        }
+        return { url: ep, headers: headers };
+      }
+
+      window.applyJsonCredentialsPaste = function () {
+        const rawEl = document.getElementById("cloud-json-creds-input");
+        if (!rawEl) return;
+        const txt = rawEl.value.trim();
+        if (!txt) return showToast("Pega tus credenciales o configuración JSON primero");
+        try {
+          const parsed = JSON.parse(txt);
+          const endpoint = parsed.endpoint || parsed.url || parsed.databaseURL || parsed.database_url || "";
+          const apiKey = parsed.apiKey || parsed.api_key || parsed.secret || parsed.token || parsed.auth || "";
+          const workspaceId = parsed.workspaceId || parsed.workspace || "";
+          if (endpoint && document.getElementById("cloud-endpoint-input")) {
+            document.getElementById("cloud-endpoint-input").value = endpoint;
+          }
+          if (apiKey && document.getElementById("cloud-apikey-input")) {
+            document.getElementById("cloud-apikey-input").value = apiKey;
+          }
+          if (workspaceId && document.getElementById("workspace-id-input")) {
+            document.getElementById("workspace-id-input").value = workspaceId;
+            currentWorkspaceId = workspaceId.trim().replace(/[^a-zA-Z0-9_-]/g, "_");
+            localStorage.setItem("gp_workspace_id", currentWorkspaceId);
+          }
+          showToast("Credenciales JSON cargadas en los campos");
+        } catch (e) {
+          showToast("El texto pegado no tiene formato JSON válido");
+        }
+      };
+
+      window.saveCloudSettings = async function () {
+        const credsArea = document.getElementById("cloud-json-creds-input");
+        let endpoint = (document.getElementById("cloud-endpoint-input").value || "").trim();
+        let apiKey = (document.getElementById("cloud-apikey-input").value || "").trim();
+        const autoSync = Boolean(document.getElementById("cloud-autosync-check").checked);
+
+        if (!endpoint && credsArea && credsArea.value.trim()) {
+          try {
+            const p = JSON.parse(credsArea.value.trim());
+            endpoint = (p.endpoint || p.url || p.databaseURL || p.database_url || "").trim();
+            apiKey = (p.apiKey || p.api_key || p.secret || p.token || p.auth || apiKey).trim();
+            if (document.getElementById("cloud-endpoint-input")) document.getElementById("cloud-endpoint-input").value = endpoint;
+            if (document.getElementById("cloud-apikey-input")) document.getElementById("cloud-apikey-input").value = apiKey;
+          } catch (e) {}
+        }
+
+        saveCloudConfig({ endpoint: endpoint, apiKey: apiKey, autoSync: autoSync });
+        if (endpoint) setCloudBucketUrl(endpoint);
+        await pushToRemoteCloud(true);
+        showToast("Configuración de nube guardada");
+      };
+
+      setInterval(function () {
+        const cfg = getCloudConfig();
+        if (cfg.autoSync !== false) {
+          pullFromRemoteCloud(true);
+        }
+      }, 20000);
+
+      document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) {
+          pullFromRemoteCloud(true);
+        }
+      });
+
+      window.addEventListener("online", function () {
+        setSyncStatus("online", "En línea · " + currentWorkspaceId);
+        pullFromRemoteCloud(true);
+      });
+
+      window.addEventListener("offline", function () {
+        setSyncStatus("local", "Local · " + currentWorkspaceId);
+      });
+
+      function upsertRecord(col, rec, silent) {
+        const idx = STATE[col].findIndex(function (x) { return x.id === rec.id; });
+        if (idx >= 0) STATE[col][idx] = rec;
+        else STATE[col].unshift(rec);
+        saveLocalCache(col);
+        broadcastState();
+        pushToRemoteCloud();
+        if (!silent) refreshAllViews();
+      }
+
+      function removeRecord(col, id) {
+        STATE[col] = STATE[col].filter(function (x) { return x.id !== id; });
+        saveLocalCache(col);
+        broadcastState();
+        pushToRemoteCloud();
+        refreshAllViews();
+      }
+
+      // Helpers
+      function fmtMoney(n) {
+        return "$" + (Number(n) || 0).toLocaleString("es-CL", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+      function todayStr() {
+        return new Date().toISOString().split("T")[0];
+      }
+      function uid(prefix) {
+        return prefix + "_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
+      }
+      function showToast(msg) {
+        const el = document.getElementById("toast");
+        el.textContent = msg;
+        el.classList.remove("hidden");
+        clearTimeout(window._gpToastTimer);
+        window._gpToastTimer = setTimeout(function () { el.classList.add("hidden"); }, 2800);
+      }
+
+      window.openModal = function (id) { document.getElementById(id).classList.remove("hidden"); };
+      window.closeModal = function (id) { document.getElementById(id).classList.add("hidden"); };
+
+      function customConfirm(title, message, onYes) {
+        document.getElementById("confirm-title").textContent = title;
+        document.getElementById("confirm-message").textContent = message;
+        document.getElementById("confirm-yes-btn").onclick = function () {
+          closeModal("modal-confirm");
+          onYes();
+        };
+        openModal("modal-confirm");
+      }
+
+      // Navigation
+      window.switchTab = function (tabName) {
+        document.querySelectorAll(".view-section").forEach(function (sec) { sec.classList.add("hidden"); });
+        const target = document.getElementById("view-" + tabName);
+        if (target) target.classList.remove("hidden");
+
+        document.querySelectorAll(".tab-btn").forEach(function (btn) {
+          btn.classList.toggle("active", btn.getAttribute("data-tab") === tabName);
+        });
+        document.querySelectorAll(".mtab-btn").forEach(function (btn) {
+          btn.classList.toggle("active", btn.getAttribute("data-mtab") === tabName);
+        });
+        refreshAllViews();
+      };
+
+      window.toggleMobileMore = function (force) {
+        const drawer = document.getElementById("mobile-more-drawer");
+        if (typeof force === "boolean") drawer.classList.toggle("hidden", !force);
+        else drawer.classList.toggle("hidden");
+      };
+
+      window.openSyncModal = function () { switchTab("backup"); };
+
+      window.saveWorkspaceId = function () {
+        const val = document.getElementById("workspace-id-input").value.trim().replace(/[^a-zA-Z0-9_-]/g, "_");
+        if (!val) return showToast("Ingresa un código válido");
+        currentWorkspaceId = val;
+        localStorage.setItem("gp_workspace_id", val);
+        loadLocalCache();
+        refreshAllViews();
+        setSyncStatus("online", "En línea · " + currentWorkspaceId);
+        showToast("Espacio conectado: " + val);
+      };
+
+      window.copyWorkspaceUrl = function () {
+        const inp = document.getElementById("share-workspace-url");
+        inp.select();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(inp.value).catch(function () {});
+        }
+        showToast("Enlace copiado");
+      };
+
+      // Quick Client
+      window.toggleQuickClientForm = function (ctx, force) {
+        const box = document.getElementById(ctx + "-quick-client-box");
+        if (typeof force === "boolean") box.classList.toggle("hidden", !force);
+        else box.classList.toggle("hidden");
+      };
+
+      window.saveQuickClient = function (ctx) {
+        const name = document.getElementById("qc-" + ctx + "-name").value.trim();
+        const phone = document.getElementById("qc-" + ctx + "-phone").value.trim();
+        if (!name) return showToast("Ingresa el nombre del cliente");
+        const cli = { id: uid("cli"), name: name, phone: phone, email: "", address: "" };
+        upsertRecord("clients", cli);
+        populateClientSelects();
+        if (ctx === "pos") {
+          document.getElementById("pos-client").value = cli.id;
+          onPosClientChange();
+        } else if (ctx === "order") {
+          document.getElementById("ord-client").value = cli.id;
+        }
+        document.getElementById("qc-" + ctx + "-name").value = "";
+        document.getElementById("qc-" + ctx + "-phone").value = "";
+        toggleQuickClientForm(ctx, false);
+        showToast("Cliente creado");
+      };
+
+      function populateClientSelects() {
+        const opts = STATE.clients.map(function (c) {
+          return '<option value="' + c.id + '">' + c.name + (c.phone ? " (" + c.phone + ")" : "") + "</option>";
+        }).join("");
+        const posSel = document.getElementById("pos-client");
+        const prevPos = posSel.value;
+        posSel.innerHTML = '<option value="">Cliente General (Mostrador)</option>' + opts;
+        posSel.value = prevPos;
+
+        const ordSel = document.getElementById("ord-client");
+        const prevOrd = ordSel.value;
+        ordSel.innerHTML = '<option value="">-- Seleccionar Cliente --</option>' + opts;
+        ordSel.value = prevOrd;
+
+        const incSel = document.getElementById("inc-client");
+        const prevInc = incSel.value;
+        incSel.innerHTML = '<option value="">Cliente General</option>' + opts;
+        incSel.value = prevInc;
+      }
+
+      // POS
+      window.setSaleType = function (type) {
+        saleType = type;
+        const bCash = document.getElementById("btn-sale-cash");
+        const bCred = document.getElementById("btn-sale-credit");
+        const cFields = document.getElementById("pos-credit-fields");
+        const pLabel = document.getElementById("pos-paid-label");
+
+        if (type === "contado") {
+          bCash.className = "btn btn-success touch-btn";
+          bCred.className = "btn btn-light touch-btn";
+          cFields.classList.add("hidden");
+          pLabel.textContent = "Monto Recibido ($)";
+        } else {
+          bCred.className = "btn btn-warning touch-btn";
+          bCash.className = "btn btn-light touch-btn";
+          cFields.classList.remove("hidden");
+          pLabel.textContent = "Abono Inicial ($)";
+          document.getElementById("pos-paid").value = "0";
+          updateCreditDueDate();
+          onPosClientChange();
+        }
+        recalcCartTotals();
+      };
+
+      window.onPosClientChange = function () {
+        const warn = document.getElementById("pos-credit-client-warning");
+        const cid = document.getElementById("pos-client").value;
+        warn.classList.toggle("hidden", !(saleType === "credito" && !cid));
+      };
+
+      window.updateCreditDueDate = function () {
+        const term = document.getElementById("pos-credit-term").value;
+        if (term === "custom") return;
+        const d = new Date();
+        d.setDate(d.getDate() + (parseInt(term, 10) || 30));
+        document.getElementById("pos-credit-due").value = d.toISOString().split("T")[0];
+      };
+
+      window.renderPosCatalog = function () {
+        const q = (document.getElementById("pos-search").value || "").toLowerCase();
+        const cat = document.getElementById("pos-category-filter").value;
+        const cats = Array.from(new Set(STATE.products.map(function (p) { return p.category || "General"; })));
+        const catSel = document.getElementById("pos-category-filter");
+        const prevCat = catSel.value;
+        catSel.innerHTML = '<option value="">Todas</option>' + cats.map(function (c) {
+          return '<option value="' + c + '">' + c + "</option>";
+        }).join("");
+        catSel.value = prevCat;
+
+        const list = STATE.products.filter(function (p) {
+          const mQ = p.name.toLowerCase().indexOf(q) >= 0 || (p.sku || "").toLowerCase().indexOf(q) >= 0;
+          const mC = !cat || (p.category || "General") === cat;
+          return mQ && mC;
+        });
+
+        const grid = document.getElementById("pos-catalog-grid");
+        if (list.length === 0) {
+          grid.innerHTML = '<div class="card" style="grid-column:1/-1;text-align:center;color:var(--muted);">No hay productos</div>';
+          return;
+        }
+        grid.innerHTML = list.map(function (p) {
+          const low = p.stock <= (p.minStock || 5);
+          return (
+            '<div onclick="addToCart(\'' + p.id + '\')" class="card" style="cursor:pointer;opacity:' + (p.stock <= 0 ? ".5" : "1") + ';">' +
+              '<div class="flex items-center justify-between" style="font-size:10px;color:var(--muted);">' +
+                '<span>' + (p.sku || "SKU") + "</span>" +
+                '<span class="badge ' + (low ? "badge-warn" : "badge-ok") + '">Stock: ' + p.stock + "</span>" +
+              "</div>" +
+              '<div style="font-weight:700;font-size:13px;margin:6px 0;">' + p.name + "</div>" +
+              '<div style="font-weight:800;font-size:15px;color:#4f46e5;">' + fmtMoney(p.price) + "</div>" +
+            "</div>"
+          );
+        }).join("");
+      };
+
+      window.addToCart = function (pid) {
+        const prod = STATE.products.find(function (p) { return p.id === pid; });
+        if (!prod || prod.stock <= 0) return showToast("Sin stock disponible");
+        const ex = cart.find(function (c) { return c.productId === pid; });
+        if (ex) {
+          if (ex.qty + 1 > prod.stock) return showToast("Stock máximo: " + prod.stock);
+          ex.qty++;
+        } else {
+          cart.push({ productId: prod.id, name: prod.name, price: Number(prod.price) || 0, qty: 1 });
+        }
+        renderCart();
+      };
+
+      window.updateCartQty = function (idx, delta) {
+        const item = cart[idx];
+        if (!item) return;
+        const prod = STATE.products.find(function (p) { return p.id === item.productId; });
+        const next = item.qty + delta;
+        if (next <= 0) cart.splice(idx, 1);
+        else if (prod && next > prod.stock) return showToast("Stock disponible: " + prod.stock);
+        else item.qty = next;
+        renderCart();
+      };
+
+      window.clearCart = function () { cart = []; renderCart(); };
+
+      function renderCart() {
+        const box = document.getElementById("pos-cart-items");
+        if (cart.length === 0) {
+          box.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:16px 0;">Carrito vacío</div>';
+        } else {
+          box.innerHTML = cart.map(function (it, idx) {
+            return (
+              '<div class="flex items-center justify-between gap-2" style="padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:12px;">' +
+                '<div style="flex:1;min-width:0;"><div style="font-weight:700;">' + it.name + "</div><div style='color:var(--muted);'>" + fmtMoney(it.price) + " c/u</div></div>" +
+                '<div class="flex items-center gap-2">' +
+                  '<button type="button" onclick="updateCartQty(' + idx + ',-1)" class="btn btn-sm btn-light">-</button>' +
+                  '<strong style="min-width:20px;text-align:center;">' + it.qty + "</strong>" +
+                  '<button type="button" onclick="updateCartQty(' + idx + ',1)" class="btn btn-sm btn-light">+</button>' +
+                "</div>" +
+                '<strong style="min-width:68px;text-align:right;">' + fmtMoney(it.qty * it.price) + "</strong>" +
+              "</div>"
+            );
+          }).join("");
+        }
+        recalcCartTotals();
+      }
+
+      window.recalcCartTotals = function () {
+        const sub = cart.reduce(function (a, i) { return a + i.qty * i.price; }, 0);
+        const disc = Math.max(0, Number(document.getElementById("pos-discount").value) || 0);
+        const tot = Math.max(0, sub - disc);
+        document.getElementById("pos-total").textContent = fmtMoney(tot);
+
+        const paidEl = document.getElementById("pos-paid");
+        if (saleType === "contado" && document.activeElement !== paidEl) {
+          paidEl.value = tot.toFixed(2);
+        }
+        const paid = Math.max(0, Number(paidEl.value) || 0);
+        const bLbl = document.getElementById("pos-balance-label");
+        const bVal = document.getElementById("pos-balance-value");
+        if (saleType === "contado") {
+          bLbl.textContent = "Cambio / Vuelto:";
+          bVal.style.color = "#059669";
+          bVal.textContent = fmtMoney(Math.max(0, paid - tot));
+        } else {
+          bLbl.textContent = "Saldo a Crédito:";
+          bVal.style.color = "#e11d48";
+          bVal.textContent = fmtMoney(Math.max(0, tot - paid));
+        }
+      };
+
+      window.completeSale = function () {
+        if (cart.length === 0) return showToast("Agrega al menos un producto");
+        const cid = document.getElementById("pos-client").value;
+        if (saleType === "credito" && !cid) {
+          onPosClientChange();
+          return showToast("Selecciona o crea un cliente para vender a crédito");
+        }
+        const sub = cart.reduce(function (a, i) { return a + i.qty * i.price; }, 0);
+        const disc = Math.max(0, Number(document.getElementById("pos-discount").value) || 0);
+        const tot = Math.max(0, sub - disc);
+        let paidIn = Math.max(0, Number(document.getElementById("pos-paid").value) || 0);
+        if (saleType === "contado" && paidIn < tot) return showToast("Monto recibido menor al total");
+        if (saleType === "credito" && paidIn > tot) paidIn = tot;
+
+        const appliedPaid = saleType === "contado" ? tot : paidIn;
+        const balance = Math.max(0, tot - appliedPaid);
+        const cli = STATE.clients.find(function (c) { return c.id === cid; });
+        const clientName = cli ? cli.name : "Cliente General";
+        const method = document.getElementById("pos-method").value;
+        const folio = "V-" + String(STATE.sales.length + 1).padStart(4, "0");
+        const dStr = todayStr();
+
+        cart.forEach(function (it) {
+          const prod = STATE.products.find(function (p) { return p.id === it.productId; });
+          if (prod) {
+            prod.stock = Math.max(0, (Number(prod.stock) || 0) - it.qty);
+            upsertRecord("products", prod, true);
+          }
+        });
+
+        const saleRec = {
+          id: uid("sale"),
+          folio: folio,
+          date: dStr,
+          clientId: cid || "",
+          clientName: clientName,
+          saleType: saleType,
+          dueDate: saleType === "credito" ? document.getElementById("pos-credit-due").value : "",
+          items: cart.slice(),
+          subtotal: sub,
+          discount: disc,
+          total: tot,
+          paid: appliedPaid,
+          balance: balance,
+          method: method,
+          status: balance <= 0 ? "Pagada" : "Pendiente"
+        };
+        upsertRecord("sales", saleRec, true);
+
+        if (appliedPaid > 0) {
+          upsertRecord("incomes", {
+            id: uid("inc"),
+            receiptNo: "REC-" + String(STATE.incomes.length + 1).padStart(4, "0"),
+            date: dStr,
+            clientId: cid || "",
+            clientName: clientName,
+            type: saleType === "contado" ? "Venta Contado" : "Abono Crédito",
+            concept: "Pago " + folio,
+            method: method,
+            amount: appliedPaid,
+            linkedSaleId: saleRec.id
+          }, true);
+        }
+
+        cart = [];
+        document.getElementById("pos-discount").value = "0";
+        document.getElementById("pos-paid").value = "0";
+        setSaleType("contado");
+        refreshAllViews();
+        showSaleReceipt(saleRec);
+        showToast("Venta " + folio + " registrada");
+      };
+
+      // Orders
+      window.openOrderModal = function (orderId) {
+        populateClientSelects();
+        const pick = document.getElementById("ord-product-pick");
+        pick.innerHTML = '<option value="">-- Ítem personalizado --</option>' + STATE.products.map(function (p) {
+          return '<option value="' + p.id + '">' + p.name + " (" + fmtMoney(p.price) + ")</option>";
+        }).join("");
+        orderDraftItems = [];
+        document.getElementById("ord-edit-id").value = orderId || "";
+
+        if (orderId) {
+          const o = STATE.orders.find(function (x) { return x.id === orderId; });
+          if (!o) return;
+          document.getElementById("modal-order-title").textContent = "Editar Encargo " + o.code;
+          document.getElementById("ord-client").value = o.clientId || "";
+          document.getElementById("ord-date").value = o.date || todayStr();
+          document.getElementById("ord-delivery-date").value = o.deliveryDate || todayStr();
+          document.getElementById("ord-status").value = o.status || "Pendiente";
+          document.getElementById("ord-deposit").value = o.paid || 0;
+          document.getElementById("ord-deposit").disabled = true;
+          document.getElementById("ord-notes").value = o.notes || "";
+          orderDraftItems = JSON.parse(JSON.stringify(o.items || []));
+        } else {
+          document.getElementById("modal-order-title").textContent = "Nuevo Encargo";
+          document.getElementById("ord-client").value = "";
+          document.getElementById("ord-date").value = todayStr();
+          const del = new Date();
+          del.setDate(del.getDate() + 3);
+          document.getElementById("ord-delivery-date").value = del.toISOString().split("T")[0];
+          document.getElementById("ord-status").value = "Pendiente";
+          document.getElementById("ord-deposit").value = "0";
+          document.getElementById("ord-deposit").disabled = false;
+          document.getElementById("ord-notes").value = "";
+        }
+        renderOrderDraftItems();
+        openModal("modal-order");
+      };
+
+      window.onOrderProductPick = function () {
+        const pid = document.getElementById("ord-product-pick").value;
+        const p = STATE.products.find(function (x) { return x.id === pid; });
+        if (p) {
+          document.getElementById("ord-item-name").value = p.name;
+          document.getElementById("ord-item-price").value = p.price;
+        }
+      };
+
+      window.addOrderDraftItem = function () {
+        const pid = document.getElementById("ord-product-pick").value;
+        const name = document.getElementById("ord-item-name").value.trim();
+        const qty = Math.max(1, parseInt(document.getElementById("ord-item-qty").value, 10) || 1);
+        const price = Math.max(0, Number(document.getElementById("ord-item-price").value) || 0);
+        const res = document.getElementById("ord-reserve-stock").checked;
+        if (!name) return showToast("Ingresa descripción del artículo");
+        orderDraftItems.push({ productId: pid || "", name: name, qty: qty, price: price, reserveStock: Boolean(pid && res) });
+        document.getElementById("ord-product-pick").value = "";
+        document.getElementById("ord-item-name").value = "";
+        document.getElementById("ord-item-qty").value = "1";
+        document.getElementById("ord-item-price").value = "";
+        renderOrderDraftItems();
+      };
+
+      window.removeOrderDraftItem = function (idx) {
+        orderDraftItems.splice(idx, 1);
+        renderOrderDraftItems();
+      };
+
+      function renderOrderDraftItems() {
+        const box = document.getElementById("ord-draft-items");
+        if (orderDraftItems.length === 0) {
+          box.innerHTML = '<div style="font-size:12px;color:var(--muted);">Sin artículos agregados</div>';
+        } else {
+          box.innerHTML = orderDraftItems.map(function (it, idx) {
+            return (
+              '<div class="flex items-center justify-between" style="padding:4px 0;font-size:12px;">' +
+                '<span><strong>' + it.qty + "x</strong> " + it.name + "</span>" +
+                '<div class="flex items-center gap-2"><strong>' + fmtMoney(it.qty * it.price) + '</strong><button type="button" onclick="removeOrderDraftItem(' + idx + ')" class="btn btn-sm btn-light"><i class="fa-solid fa-trash"></i></button></div>' +
+              "</div>"
+            );
+          }).join("");
+        }
+        recalcOrderDraft();
+      }
+
+      window.recalcOrderDraft = function () {
+        const tot = orderDraftItems.reduce(function (a, i) { return a + i.qty * i.price; }, 0);
+        const paid = Math.max(0, Number(document.getElementById("ord-deposit").value) || 0);
+        document.getElementById("ord-draft-total").textContent = fmtMoney(tot);
+        document.getElementById("ord-draft-paid").textContent = fmtMoney(paid);
+        document.getElementById("ord-draft-balance").textContent = fmtMoney(Math.max(0, tot - paid));
+      };
+
+      window.saveOrder = function () {
+        const cid = document.getElementById("ord-client").value;
+        if (!cid) return showToast("Selecciona o crea un cliente");
+        if (orderDraftItems.length === 0) return showToast("Agrega al menos un artículo");
+
+        const editId = document.getElementById("ord-edit-id").value;
+        const cli = STATE.clients.find(function (c) { return c.id === cid; });
+        const tot = orderDraftItems.reduce(function (a, i) { return a + i.qty * i.price; }, 0);
+        const status = document.getElementById("ord-status").value;
+        const notes = document.getElementById("ord-notes").value.trim();
+        const date = document.getElementById("ord-date").value || todayStr();
+        const deliveryDate = document.getElementById("ord-delivery-date").value || todayStr();
+
+        if (editId) {
+          const ex = STATE.orders.find(function (o) { return o.id === editId; });
+          if (!ex) return;
+          ex.clientId = cid;
+          ex.clientName = cli ? cli.name : "Cliente";
+          ex.clientPhone = cli ? (cli.phone || "") : "";
+          ex.date = date;
+          ex.deliveryDate = deliveryDate;
+          ex.items = orderDraftItems.slice();
+          ex.total = tot;
+          ex.balance = Math.max(0, tot - (Number(ex.paid) || 0));
+          ex.status = status;
+          ex.notes = notes;
+          upsertRecord("orders", ex);
+          closeModal("modal-order");
+          showToast("Encargo actualizado");
+        } else {
+          const dep = Math.min(tot, Math.max(0, Number(document.getElementById("ord-deposit").value) || 0));
+          const method = document.getElementById("ord-method").value;
+          const code = "ENC-" + String(STATE.orders.length + 1).padStart(4, "0");
+
+          orderDraftItems.forEach(function (it) {
+            if (it.productId && it.reserveStock) {
+              const prod = STATE.products.find(function (p) { return p.id === it.productId; });
+              if (prod) {
+                prod.stock = Math.max(0, (Number(prod.stock) || 0) - it.qty);
+                upsertRecord("products", prod, true);
+              }
+            }
+          });
+
+          const newOrd = {
+            id: uid("ord"),
+            code: code,
+            date: date,
+            deliveryDate: deliveryDate,
+            clientId: cid,
+            clientName: cli ? cli.name : "Cliente",
+            clientPhone: cli ? (cli.phone || "") : "",
+            items: orderDraftItems.slice(),
+            total: tot,
+            paid: dep,
+            balance: Math.max(0, tot - dep),
+            status: status,
+            notes: notes
+          };
+          upsertRecord("orders", newOrd, true);
+
+          if (dep > 0) {
+            upsertRecord("incomes", {
+              id: uid("inc"),
+              receiptNo: "REC-" + String(STATE.incomes.length + 1).padStart(4, "0"),
+              date: date,
+              clientId: cid,
+              clientName: newOrd.clientName,
+              type: "Anticipo Encargo",
+              concept: "Anticipo " + code,
+              method: method,
+              amount: dep,
+              linkedOrderId: newOrd.id
+            }, true);
+          }
+
+          closeModal("modal-order");
+          refreshAllViews();
+          showOrderReceipt(newOrd);
+          showToast("Encargo " + code + " creado");
+        }
+      };
+
+      window.changeOrderStatus = function (oid, st) {
+        const o = STATE.orders.find(function (x) { return x.id === oid; });
+        if (!o) return;
+        o.status = st;
+        upsertRecord("orders", o);
+        showToast("Estado actualizado: " + st);
+      };
+
+      window.deliverAndConvertOrder = function (oid) {
+        const o = STATE.orders.find(function (x) { return x.id === oid; });
+        if (!o) return;
+        customConfirm(
+          "Entregar Encargo " + o.code,
+          "Marcará como Entregado" + (o.balance > 0 ? " y cobrará el saldo de " + fmtMoney(o.balance) : "") + " registrando la venta.",
+          function () {
+            if (o.balance > 0) {
+              upsertRecord("incomes", {
+                id: uid("inc"),
+                receiptNo: "REC-" + String(STATE.incomes.length + 1).padStart(4, "0"),
+                date: todayStr(),
+                clientId: o.clientId,
+                clientName: o.clientName,
+                type: "Anticipo Encargo",
+                concept: "Liquidación " + o.code,
+                method: "Efectivo",
+                amount: Number(o.balance) || 0,
+                linkedOrderId: o.id
+              }, true);
+            }
+            o.paid = o.total;
+            o.balance = 0;
+            o.status = "Entregado";
+            upsertRecord("orders", o, true);
+
+            upsertRecord("sales", {
+              id: uid("sale"),
+              folio: "V-" + String(STATE.sales.length + 1).padStart(4, "0"),
+              date: todayStr(),
+              clientId: o.clientId,
+              clientName: o.clientName,
+              saleType: "contado",
+              items: o.items || [],
+              subtotal: o.total,
+              discount: 0,
+              total: o.total,
+              paid: o.total,
+              balance: 0,
+              method: "Efectivo",
+              status: "Pagada"
+            }, true);
+
+            refreshAllViews();
+            showToast("Encargo " + o.code + " entregado");
+          }
+        );
+      };
+
+      window.renderOrders = function () {
+        const q = (document.getElementById("ord-search").value || "").toLowerCase();
+        const stF = document.getElementById("ord-status-filter").value;
+        const today = todayStr();
+
+        const active = STATE.orders.filter(function (o) { return o.status !== "Entregado" && o.status !== "Cancelado"; });
+        const urgent = active.filter(function (o) { return o.deliveryDate <= today; });
+        const sumPaid = STATE.orders.reduce(function (a, o) { return a + (Number(o.paid) || 0); }, 0);
+        const sumDue = active.reduce(function (a, o) { return a + (Number(o.balance) || 0); }, 0);
+
+        document.getElementById("ord-kpi-active").textContent = active.length;
+        document.getElementById("ord-kpi-urgent").textContent = urgent.length;
+        document.getElementById("ord-kpi-paid").textContent = fmtMoney(sumPaid);
+        document.getElementById("ord-kpi-due").textContent = fmtMoney(sumDue);
+
+        const list = STATE.orders.filter(function (o) {
+          const mSt = stF === "all" ? true : (stF === "active" ? (o.status !== "Entregado" && o.status !== "Cancelado") : o.status === stF);
+          const itemsStr = (o.items || []).map(function (i) { return i.name; }).join(" ").toLowerCase();
+          const mQ = o.code.toLowerCase().indexOf(q) >= 0 || o.clientName.toLowerCase().indexOf(q) >= 0 || itemsStr.indexOf(q) >= 0;
+          return mSt && mQ;
+        });
+
+        const box = document.getElementById("orders-list-container");
+        if (list.length === 0) {
+          box.innerHTML = '<div class="card" style="grid-column:1/-1;text-align:center;color:var(--muted);">No hay encargos en esta vista</div>';
+          return;
+        }
+
+        box.innerHTML = list.map(function (o) {
+          const overdue = o.status !== "Entregado" && o.status !== "Cancelado" && o.deliveryDate < today;
+          return (
+            '<div class="card space-y-3">' +
+              '<div class="flex items-start justify-between gap-2">' +
+                '<div>' +
+                  '<strong style="color:#4f46e5;">' + o.code + '</strong> <span class="badge badge-info">' + o.status + "</span>" +
+                  (overdue ? ' <span class="badge badge-due">Atrasado</span>' : "") +
+                  '<div style="font-weight:800;font-size:15px;margin-top:4px;">' + o.clientName + "</div>" +
+                  (o.clientPhone ? '<div style="font-size:12px;color:var(--muted);">Tel: ' + o.clientPhone + "</div>" : "") +
+                "</div>" +
+                '<div class="text-right" style="font-size:12px;"><div>Entrega</div><strong>' + o.deliveryDate + "</strong></div>" +
+              "</div>" +
+              '<div style="background:#f8fafc;border-radius:10px;padding:8px;font-size:12px;">' +
+                (o.items || []).map(function (i) { return '<div class="flex justify-between"><span>' + i.qty + "x " + i.name + "</span><strong>" + fmtMoney(i.qty * i.price) + "</strong></div>"; }).join("") +
+              "</div>" +
+              (o.notes ? '<div style="font-size:12px;color:var(--muted);">Nota: ' + o.notes + "</div>" : "") +
+              '<div class="grid-3" style="text-align:center;font-size:12px;background:#f8fafc;border-radius:10px;padding:8px;">' +
+                '<div><span style="color:var(--muted);display:block;">Total</span><strong>' + fmtMoney(o.total) + "</strong></div>" +
+                '<div><span style="color:var(--muted);display:block;">Abonado</span><strong style="color:#059669;">' + fmtMoney(o.paid) + "</strong></div>" +
+                '<div><span style="color:var(--muted);display:block;">Saldo</span><strong style="color:#e11d48;">' + fmtMoney(o.balance) + "</strong></div>" +
+              "</div>" +
+              '<div class="flex flex-wrap items-center justify-between gap-2">' +
+                '<select onchange="changeOrderStatus(\'' + o.id + '\', this.value)" class="select" style="width:auto;padding:6px 8px;font-size:12px;">' +
+                  ["Pendiente", "En Preparación", "Listo para Entrega", "Entregado", "Cancelado"].map(function (s) {
+                    return '<option value="' + s + '"' + (o.status === s ? " selected" : "") + ">" + s + "</option>";
+                  }).join("") +
+                "</select>" +
+                '<div class="flex flex-wrap gap-2">' +
+                  (o.balance > 0 ? '<button type="button" onclick="openAbonoModal(\'order\',\'' + o.id + '\')" class="btn btn-sm btn-success">+ Abonar</button>' : "") +
+                  (o.status !== "Entregado" ? '<button type="button" onclick="deliverAndConvertOrder(\'' + o.id + '\')" class="btn btn-sm btn-primary">Entregar</button>' : "") +
+                  '<button type="button" onclick="openOrderModal(\'' + o.id + '\')" class="btn btn-sm btn-light"><i class="fa-solid fa-pen"></i></button>' +
+                "</div>" +
+              "</div>" +
+            "</div>"
+          );
+        }).join("");
+      };
+
+      // Export Excel (.xls and .csv)
+      window.exportOrdersExcel = function (format) {
+        if (STATE.orders.length === 0) return showToast("No hay encargos para exportar");
+        const base = "Encargos_GestorPro_" + todayStr();
+        if (format === "csv") {
+          const headers = ["Codigo", "Fecha Encargo", "Fecha Entrega", "Cliente", "Telefono", "Articulos", "Notas", "Total", "Abonado", "Saldo", "Estado"];
+          const rows = STATE.orders.map(function (o) {
+            return [
+              o.code,
+              o.date,
+              o.deliveryDate,
+              '"' + String(o.clientName || "").replace(/"/g, '""') + '"',
+              '"' + String(o.clientPhone || "").replace(/"/g, '""') + '"',
+              '"' + (o.items || []).map(function (i) { return i.qty + "x " + i.name; }).join("; ").replace(/"/g, '""') + '"',
+              '"' + String(o.notes || "").replace(/"/g, '""') + '"',
+              Number(o.total || 0).toFixed(2),
+              Number(o.paid || 0).toFixed(2),
+              Number(o.balance || 0).toFixed(2),
+              o.status
+            ].join(",");
+          });
+          const csv = "\uFEFF" + headers.join(",") + "\n" + rows.join("\n");
+          downloadBlob(new Blob([csv], { type: "text/csv;charset=utf-8;" }), base + ".csv");
+          showToast("CSV descargado para Excel");
+        } else {
+          const html =
+            '<html><head><meta charset="UTF-8" /></head><body><table border="1">' +
+            "<tr><th>Código</th><th>Fecha Encargo</th><th>Fecha Entrega</th><th>Cliente</th><th>Teléfono</th><th>Artículos</th><th>Notas</th><th>Total</th><th>Abonado</th><th>Saldo</th><th>Estado</th></tr>" +
+            STATE.orders.map(function (o) {
+              return (
+                "<tr><td>" + o.code + "</td><td>" + o.date + "</td><td>" + o.deliveryDate + "</td><td>" + o.clientName + "</td>" +
+                "<td>" + (o.clientPhone || "") + "</td><td>" + (o.items || []).map(function (i) { return i.qty + "x " + i.name; }).join("; ") + "</td>" +
+                "<td>" + (o.notes || "") + "</td><td>" + Number(o.total || 0).toFixed(2) + "</td><td>" + Number(o.paid || 0).toFixed(2) + "</td>" +
+                "<td>" + Number(o.balance || 0).toFixed(2) + "</td><td>" + o.status + "</td></tr>"
+              );
+            }).join("") +
+            "</table></body></html>";
+          downloadBlob(new Blob([html], { type: "application/vnd.ms-excel;charset=utf-8;" }), base + ".xls");
+          showToast("Excel (.xls) descargado");
+        }
+      };
+
+      function downloadBlob(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      // Credits & Abonos
+      window.setCreditViewMode = function (mode) {
+        creditViewMode = mode;
+        document.getElementById("cred-tab-invoices").className = "btn btn-sm " + (mode === "invoices" ? "btn-primary" : "btn-light");
+        document.getElementById("cred-tab-clients").className = "btn btn-sm " + (mode === "clients" ? "btn-primary" : "btn-light");
+        renderCredits();
+      };
+
+      window.renderCredits = function () {
+        const q = (document.getElementById("cred-search").value || "").toLowerCase();
+        const today = todayStr();
+        const cSales = STATE.sales.filter(function (s) { return s.saleType === "credito"; });
+
+        document.getElementById("cred-kpi-total").textContent = fmtMoney(cSales.reduce(function (a, s) { return a + (Number(s.total) || 0); }, 0));
+        document.getElementById("cred-kpi-paid").textContent = fmtMoney(cSales.reduce(function (a, s) { return a + (Number(s.paid) || 0); }, 0));
+        document.getElementById("cred-kpi-due").textContent = fmtMoney(cSales.reduce(function (a, s) { return a + (Number(s.balance) || 0); }, 0));
+        document.getElementById("cred-kpi-overdue").textContent = cSales.filter(function (s) { return s.balance > 0 && s.dueDate && s.dueDate < today; }).length;
+
+        const filtered = cSales.filter(function (s) {
+          return s.clientName.toLowerCase().indexOf(q) >= 0 || s.folio.toLowerCase().indexOf(q) >= 0;
+        });
+
+        const area = document.getElementById("credits-content-area");
+        if (filtered.length === 0) {
+          area.innerHTML = '<div class="card" style="text-align:center;color:var(--muted);">No hay créditos registrados</div>';
+          return;
+        }
+
+        if (creditViewMode === "invoices") {
+          area.innerHTML = filtered.map(function (s) {
+            const overdue = s.balance > 0 && s.dueDate && s.dueDate < today;
+            return (
+              '<div class="card flex flex-wrap items-center justify-between gap-3">' +
+                '<div>' +
+                  '<strong>' + s.folio + '</strong> · <strong style="font-size:15px;">' + s.clientName + "</strong> " +
+                  (s.balance <= 0 ? '<span class="badge badge-ok">Pagado</span>' : (overdue ? '<span class="badge badge-due">Vencido</span>' : '<span class="badge badge-warn">Al día</span>')) +
+                  '<div style="font-size:12px;color:var(--muted);margin-top:4px;">Fecha: ' + s.date + " · Vence: " + (s.dueDate || "-") + "</div>" +
+                "</div>" +
+                '<div class="flex items-center gap-4">' +
+                  '<div class="text-right" style="font-size:12px;">' +
+                    "<div>Total: <strong>" + fmtMoney(s.total) + "</strong></div>" +
+                    '<div style="color:#059669;">Abonado: <strong>' + fmtMoney(s.paid) + "</strong></div>" +
+                    '<div style="color:#e11d48;font-weight:800;font-size:14px;">Saldo: ' + fmtMoney(s.balance) + "</div>" +
+                  "</div>" +
+                  (s.balance > 0 ? '<button type="button" onclick="openAbonoModal(\'sale\',\'' + s.id + '\')" class="btn btn-sm btn-success touch-btn">Abonar</button>' : "") +
+                "</div>" +
+              "</div>"
+            );
+          }).join("");
+        } else {
+          const map = {};
+          filtered.forEach(function (s) {
+            const k = s.clientId || s.clientName;
+            if (!map[k]) map[k] = { name: s.clientName, total: 0, paid: 0, balance: 0 };
+            map[k].total += Number(s.total) || 0;
+            map[k].paid += Number(s.paid) || 0;
+            map[k].balance += Number(s.balance) || 0;
+          });
+          area.innerHTML = Object.keys(map).map(function (k) {
+            const c = map[k];
+            return (
+              '<div class="card flex items-center justify-between">' +
+                '<div><strong style="font-size:15px;">' + c.name + '</strong><div style="font-size:12px;color:var(--muted);">Abonado: ' + fmtMoney(c.paid) + "</div></div>" +
+                '<div class="text-right"><div style="font-size:12px;color:var(--muted);">Deuda Pendiente</div><strong style="color:#e11d48;font-size:16px;">' + fmtMoney(c.balance) + "</strong></div>" +
+              "</div>"
+            );
+          }).join("");
+        }
+      };
+
+      window.openAbonoModal = function (tType, tId) {
+        document.getElementById("abono-target-type").value = tType || "sale";
+        document.getElementById("abono-date").value = todayStr();
+        document.getElementById("abono-note").value = "";
+        populateAbonoTargets(tId || "");
+        openModal("modal-abono");
+      };
+
+      window.populateAbonoTargets = function (preId) {
+        const type = document.getElementById("abono-target-type").value;
+        const sel = document.getElementById("abono-target-id");
+        if (type === "sale") {
+          const list = STATE.sales.filter(function (s) { return s.balance > 0; });
+          sel.innerHTML = list.length ? list.map(function (s) {
+            return '<option value="' + s.id + '">' + s.folio + " — " + s.clientName + " (" + fmtMoney(s.balance) + ")</option>";
+          }).join("") : '<option value="">Sin ventas pendientes</option>';
+        } else {
+          const list = STATE.orders.filter(function (o) { return o.balance > 0 && o.status !== "Cancelado"; });
+          sel.innerHTML = list.length ? list.map(function (o) {
+            return '<option value="' + o.id + '">' + o.code + " — " + o.clientName + " (" + fmtMoney(o.balance) + ")</option>";
+          }).join("") : '<option value="">Sin encargos pendientes</option>';
+        }
+        if (preId) sel.value = preId;
+        onAbonoTargetChange();
+      };
+
+      window.onAbonoTargetChange = function () {
+        const type = document.getElementById("abono-target-type").value;
+        const id = document.getElementById("abono-target-id").value;
+        const obj = type === "sale"
+          ? STATE.sales.find(function (s) { return s.id === id; })
+          : STATE.orders.find(function (o) { return o.id === id; });
+        const due = obj ? Number(obj.balance) || 0 : 0;
+        document.getElementById("abono-current-due").textContent = fmtMoney(due);
+        document.getElementById("abono-amount").value = due > 0 ? due.toFixed(2) : "";
+        updateAbonoRemaining();
+      };
+
+      window.fillFullAbono = function () {
+        const type = document.getElementById("abono-target-type").value;
+        const id = document.getElementById("abono-target-id").value;
+        const obj = type === "sale"
+          ? STATE.sales.find(function (s) { return s.id === id; })
+          : STATE.orders.find(function (o) { return o.id === id; });
+        if (obj) {
+          document.getElementById("abono-amount").value = (Number(obj.balance) || 0).toFixed(2);
+          updateAbonoRemaining();
+        }
+      };
+
+      window.updateAbonoRemaining = function () {
+        const type = document.getElementById("abono-target-type").value;
+        const id = document.getElementById("abono-target-id").value;
+        const obj = type === "sale"
+          ? STATE.sales.find(function (s) { return s.id === id; })
+          : STATE.orders.find(function (o) { return o.id === id; });
+        const due = obj ? Number(obj.balance) || 0 : 0;
+        const amt = Math.max(0, Number(document.getElementById("abono-amount").value) || 0);
+        document.getElementById("abono-new-due").textContent = fmtMoney(Math.max(0, due - amt));
+      };
+
+      window.saveAbono = function () {
+        const type = document.getElementById("abono-target-type").value;
+        const id = document.getElementById("abono-target-id").value;
+        const amt = Number(document.getElementById("abono-amount").value) || 0;
+        const method = document.getElementById("abono-method").value;
+        const date = document.getElementById("abono-date").value || todayStr();
+        const note = document.getElementById("abono-note").value.trim();
+
+        if (!id || amt <= 0) return showToast("Monto inválido");
+
+        if (type === "sale") {
+          const s = STATE.sales.find(function (x) { return x.id === id; });
+          if (!s || amt > s.balance + 0.01) return showToast("Supera el saldo pendiente");
+          s.paid = (Number(s.paid) || 0) + amt;
+          s.balance = Math.max(0, (Number(s.total) || 0) - s.paid);
+          s.status = s.balance <= 0 ? "Pagada" : "Pendiente";
+          upsertRecord("sales", s, true);
+
+          upsertRecord("incomes", {
+            id: uid("inc"),
+            receiptNo: "REC-" + String(STATE.incomes.length + 1).padStart(4, "0"),
+            date: date,
+            clientId: s.clientId,
+            clientName: s.clientName,
+            type: "Abono Crédito",
+            concept: "Abono " + s.folio + (note ? " · " + note : ""),
+            method: method,
+            amount: amt,
+            linkedSaleId: s.id
+          }, true);
+        } else {
+          const o = STATE.orders.find(function (x) { return x.id === id; });
+          if (!o || amt > o.balance + 0.01) return showToast("Supera el saldo del encargo");
+          o.paid = (Number(o.paid) || 0) + amt;
+          o.balance = Math.max(0, (Number(o.total) || 0) - o.paid);
+          upsertRecord("orders", o, true);
+
+          upsertRecord("incomes", {
+            id: uid("inc"),
+            receiptNo: "REC-" + String(STATE.incomes.length + 1).padStart(4, "0"),
+            date: date,
+            clientId: o.clientId,
+            clientName: o.clientName,
+            type: "Anticipo Encargo",
+            concept: "Abono " + o.code + (note ? " · " + note : ""),
+            method: method,
+            amount: amt,
+            linkedOrderId: o.id
+          }, true);
+        }
+
+        closeModal("modal-abono");
+        refreshAllViews();
+        showToast("Abono registrado");
+      };
+
+      // Incomes
+      window.openIncomeModal = function () {
+        populateClientSelects();
+        document.getElementById("inc-concept").value = "";
+        document.getElementById("inc-amount").value = "";
+        document.getElementById("inc-date").value = todayStr();
+        openModal("modal-income");
+      };
+
+      window.saveDirectIncome = function () {
+        const concept = document.getElementById("inc-concept").value.trim();
+        const amount = Number(document.getElementById("inc-amount").value) || 0;
+        const method = document.getElementById("inc-method").value;
+        const cid = document.getElementById("inc-client").value;
+        const date = document.getElementById("inc-date").value || todayStr();
+        if (!concept || amount <= 0) return showToast("Completa concepto y monto");
+        const cli = STATE.clients.find(function (c) { return c.id === cid; });
+
+        upsertRecord("incomes", {
+          id: uid("inc"),
+          receiptNo: "REC-" + String(STATE.incomes.length + 1).padStart(4, "0"),
+          date: date,
+          clientId: cid || "",
+          clientName: cli ? cli.name : "Cliente General",
+          type: "Ingreso Directo",
+          concept: concept,
+          method: method,
+          amount: amount
+        });
+        closeModal("modal-income");
+        showToast("Ingreso registrado");
+      };
+
+      window.deleteIncomeRecord = function (id) {
+        const inc = STATE.incomes.find(function (x) { return x.id === id; });
+        if (!inc) return;
+        customConfirm("Eliminar Ingreso", "¿Eliminar " + inc.receiptNo + " por " + fmtMoney(inc.amount) + "?", function () {
+          if (inc.linkedSaleId) {
+            const s = STATE.sales.find(function (x) { return x.id === inc.linkedSaleId; });
+            if (s) {
+              s.paid = Math.max(0, (Number(s.paid) || 0) - (Number(inc.amount) || 0));
+              s.balance = Math.max(0, (Number(s.total) || 0) - s.paid);
+              s.status = s.balance <= 0 ? "Pagada" : "Pendiente";
+              upsertRecord("sales", s, true);
+            }
+          }
+          if (inc.linkedOrderId) {
+            const o = STATE.orders.find(function (x) { return x.id === inc.linkedOrderId; });
+            if (o) {
+              o.paid = Math.max(0, (Number(o.paid) || 0) - (Number(inc.amount) || 0));
+              o.balance = Math.max(0, (Number(o.total) || 0) - o.paid);
+              upsertRecord("orders", o, true);
+            }
+          }
+          removeRecord("incomes", id);
+          showToast("Ingreso eliminado");
+        });
+      };
+
+      window.renderIncomes = function () {
+        const today = todayStr();
+        const mPref = today.slice(0, 7);
+        const sToday = STATE.incomes.filter(function (i) { return i.date === today; }).reduce(function (a, i) { return a + (Number(i.amount) || 0); }, 0);
+        const sMonth = STATE.incomes.filter(function (i) { return (i.date || "").indexOf(mPref) === 0; }).reduce(function (a, i) { return a + (Number(i.amount) || 0); }, 0);
+        const sTotal = STATE.incomes.reduce(function (a, i) { return a + (Number(i.amount) || 0); }, 0);
+        const pendAll = STATE.sales.reduce(function (a, s) { return a + (Number(s.balance) || 0); }, 0) +
+                        STATE.orders.filter(function (o) { return o.status !== "Cancelado"; }).reduce(function (a, o) { return a + (Number(o.balance) || 0); }, 0);
+
+        document.getElementById("inc-kpi-today").textContent = fmtMoney(sToday);
+        document.getElementById("inc-kpi-month").textContent = fmtMoney(sMonth);
+        document.getElementById("inc-kpi-total").textContent = fmtMoney(sTotal);
+        document.getElementById("inc-kpi-pending").textContent = fmtMoney(pendAll);
+
+        document.getElementById("inc-method-summary").innerHTML = ["Efectivo", "Transferencia", "Tarjeta", "Otro"].map(function (m) {
+          const sumM = STATE.incomes.filter(function (i) { return i.method === m; }).reduce(function (a, i) { return a + (Number(i.amount) || 0); }, 0);
+          return '<div style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:10px;"><div style="font-size:11px;color:var(--muted);">' + m + '</div><strong style="font-size:15px;">' + fmtMoney(sumM) + "</strong></div>";
+        }).join("");
+
+        const q = (document.getElementById("inc-search").value || "").toLowerCase();
+        const tF = document.getElementById("inc-type-filter").value;
+        const mF = document.getElementById("inc-method-filter").value;
+
+        const list = STATE.incomes.filter(function (i) {
+          const mQ = (i.receiptNo || "").toLowerCase().indexOf(q) >= 0 || (i.clientName || "").toLowerCase().indexOf(q) >= 0 || (i.concept || "").toLowerCase().indexOf(q) >= 0;
+          return mQ && (!tF || i.type === tF) && (!mF || i.method === mF);
+        });
+
+        const tb = document.getElementById("incomes-table-body");
+        if (list.length === 0) {
+          tb.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:18px;">Sin registros</td></tr>';
+          return;
+        }
+        tb.innerHTML = list.map(function (i) {
+          return (
+            "<tr>" +
+              "<td><strong>" + (i.receiptNo || "REC") + '</strong><div style="font-size:11px;color:var(--muted);">' + i.date + "</div></td>" +
+              "<td><strong>" + (i.clientName || "General") + "</strong></td>" +
+              '<td><span class="badge badge-ok">' + i.type + '</span><div style="font-size:12px;margin-top:2px;">' + i.concept + "</div></td>" +
+              "<td>" + i.method + "</td>" +
+              '<td class="text-right" style="font-weight:800;color:#059669;">' + fmtMoney(i.amount) + "</td>" +
+              '<td class="text-center"><button type="button" onclick="deleteIncomeRecord(\'' + i.id + '\')" class="btn btn-sm btn-light"><i class="fa-solid fa-trash"></i></button></td>' +
+            "</tr>"
+          );
+        }).join("");
+      };
+
+      // Sales History
+      window.renderSalesHistory = function () {
+        const q = (document.getElementById("sales-search").value || "").toLowerCase();
+        const list = STATE.sales.filter(function (s) {
+          return s.folio.toLowerCase().indexOf(q) >= 0 || s.clientName.toLowerCase().indexOf(q) >= 0;
+        });
+        const tb = document.getElementById("sales-table-body");
+        if (list.length === 0) {
+          tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:18px;">Sin ventas</td></tr>';
+          return;
+        }
+        tb.innerHTML = list.map(function (s) {
+          return (
+            "<tr>" +
+              "<td><strong>" + s.folio + '</strong><div style="font-size:11px;color:var(--muted);">' + s.date + "</div></td>" +
+              "<td>" + s.clientName + "</td>" +
+              '<td><span class="badge ' + (s.saleType === "credito" ? "badge-warn" : "badge-ok") + '">' + (s.saleType === "credito" ? "A Crédito" : "Contado") + "</span></td>" +
+              '<td class="text-right"><strong>' + fmtMoney(s.total) + "</strong></td>" +
+              '<td class="text-right" style="color:#059669;">' + fmtMoney(s.paid) + "</td>" +
+              '<td class="text-right" style="font-weight:800;color:' + (s.balance > 0 ? "#e11d48" : "#64748b") + ';">' + fmtMoney(s.balance) + "</td>" +
+              '<td class="text-center"><button type="button" onclick="openSaleReceiptById(\'' + s.id + '\')" class="btn btn-sm btn-light"><i class="fa-solid fa-print"></i></button></td>' +
+            "</tr>"
+          );
+        }).join("");
+      };
+
+      window.openSaleReceiptById = function (id) {
+        const s = STATE.sales.find(function (x) { return x.id === id; });
+        if (s) showSaleReceipt(s);
+      };
+
+      // Inventory
+      window.openProductModal = function (id) {
+        document.getElementById("prod-edit-id").value = id || "";
+        if (id) {
+          const p = STATE.products.find(function (x) { return x.id === id; });
+          if (!p) return;
+          document.getElementById("modal-prod-title").textContent = "Editar Producto";
+          document.getElementById("prod-name").value = p.name;
+          document.getElementById("prod-sku").value = p.sku || "";
+          document.getElementById("prod-category").value = p.category || "General";
+          document.getElementById("prod-cost").value = p.cost || 0;
+          document.getElementById("prod-price").value = p.price || 0;
+          document.getElementById("prod-stock").value = p.stock || 0;
+          document.getElementById("prod-min-stock").value = p.minStock || 5;
+        } else {
+          document.getElementById("modal-prod-title").textContent = "Nuevo Producto";
+          document.getElementById("prod-name").value = "";
+          document.getElementById("prod-sku").value = "SKU-" + String(STATE.products.length + 1).padStart(3, "0");
+          document.getElementById("prod-category").value = "General";
+          document.getElementById("prod-cost").value = "0";
+          document.getElementById("prod-price").value = "";
+          document.getElementById("prod-stock").value = "10";
+          document.getElementById("prod-min-stock").value = "5";
+        }
+        openModal("modal-product");
+      };
+
+      window.saveProduct = function () {
+        const id = document.getElementById("prod-edit-id").value;
+        const name = document.getElementById("prod-name").value.trim();
+        const price = Number(document.getElementById("prod-price").value);
+        if (!name || isNaN(price) || price < 0) return showToast("Nombre y precio requeridos");
+        upsertRecord("products", {
+          id: id || uid("prod"),
+          name: name,
+          sku: document.getElementById("prod-sku").value.trim() || "SKU",
+          category: document.getElementById("prod-category").value.trim() || "General",
+          cost: Number(document.getElementById("prod-cost").value) || 0,
+          price: price,
+          stock: Math.max(0, parseInt(document.getElementById("prod-stock").value, 10) || 0),
+          minStock: Math.max(0, parseInt(document.getElementById("prod-min-stock").value, 10) || 5)
+        });
+        closeModal("modal-product");
+        showToast("Producto guardado");
+      };
+
+      window.deleteProduct = function (id) {
+        customConfirm("Eliminar Producto", "¿Eliminar este producto?", function () {
+          removeRecord("products", id);
+          showToast("Producto eliminado");
+        });
+      };
+
+      window.renderInventory = function () {
+        const q = (document.getElementById("inv-search").value || "").toLowerCase();
+        const lowOnly = document.getElementById("inv-low-only").checked;
+        const list = STATE.products.filter(function (p) {
+          const mQ = p.name.toLowerCase().indexOf(q) >= 0 || (p.sku || "").toLowerCase().indexOf(q) >= 0 || (p.category || "").toLowerCase().indexOf(q) >= 0;
+          return mQ && (!lowOnly || p.stock <= (p.minStock || 5));
+        });
+        const tb = document.getElementById("inventory-table-body");
+        if (list.length === 0) {
+          tb.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:18px;">Sin productos</td></tr>';
+          return;
+        }
+        tb.innerHTML = list.map(function (p) {
+          const low = p.stock <= (p.minStock || 5);
+          return (
+            "<tr>" +
+              "<td><strong>" + p.name + '</strong><div style="font-size:11px;color:var(--muted);">' + (p.sku || "") + "</div></td>" +
+              "<td>" + (p.category || "General") + "</td>" +
+              '<td class="text-right">' + fmtMoney(p.cost) + "</td>" +
+              '<td class="text-right" style="font-weight:800;color:#4f46e5;">' + fmtMoney(p.price) + "</td>" +
+              '<td class="text-center"><span class="badge ' + (low ? "badge-due" : "badge-ok") + '">' + p.stock + " uds</span></td>" +
+              '<td class="text-center"><button type="button" onclick="openProductModal(\'' + p.id + '\')" class="btn btn-sm btn-light"><i class="fa-solid fa-pen"></i></button> <button type="button" onclick="deleteProduct(\'' + p.id + '\')" class="btn btn-sm btn-light"><i class="fa-solid fa-trash"></i></button></td>' +
+            "</tr>"
+          );
+        }).join("");
+      };
+
+      // Clients
+      window.openClientModal = function (id) {
+        document.getElementById("cli-edit-id").value = id || "";
+        if (id) {
+          const c = STATE.clients.find(function (x) { return x.id === id; });
+          if (!c) return;
+          document.getElementById("modal-cli-title").textContent = "Editar Cliente";
+          document.getElementById("cli-name").value = c.name;
+          document.getElementById("cli-phone").value = c.phone || "";
+          document.getElementById("cli-email").value = c.email || "";
+          document.getElementById("cli-address").value = c.address || "";
+        } else {
+          document.getElementById("modal-cli-title").textContent = "Nuevo Cliente";
+          document.getElementById("cli-name").value = "";
+          document.getElementById("cli-phone").value = "";
+          document.getElementById("cli-email").value = "";
+          document.getElementById("cli-address").value = "";
+        }
+        openModal("modal-client");
+      };
+
+      window.saveClient = function () {
+        const id = document.getElementById("cli-edit-id").value;
+        const name = document.getElementById("cli-name").value.trim();
+        if (!name) return showToast("Nombre requerido");
+        upsertRecord("clients", {
+          id: id || uid("cli"),
+          name: name,
+          phone: document.getElementById("cli-phone").value.trim(),
+          email: document.getElementById("cli-email").value.trim(),
+          address: document.getElementById("cli-address").value.trim()
+        });
+        closeModal("modal-client");
+        showToast("Cliente guardado");
+      };
+
+      window.deleteClient = function (id) {
+        customConfirm("Eliminar Cliente", "¿Eliminar este cliente?", function () {
+          removeRecord("clients", id);
+          showToast("Cliente eliminado");
+        });
+      };
+
+      window.renderClients = function () {
+        const q = (document.getElementById("cli-search").value || "").toLowerCase();
+        const list = STATE.clients.filter(function (c) {
+          return c.name.toLowerCase().indexOf(q) >= 0 || (c.phone || "").toLowerCase().indexOf(q) >= 0;
+        });
+        const grid = document.getElementById("clients-grid");
+        if (list.length === 0) {
+          grid.innerHTML = '<div class="card" style="grid-column:1/-1;text-align:center;color:var(--muted);">Sin clientes</div>';
+          return;
+        }
+        grid.innerHTML = list.map(function (c) {
+          const due = STATE.sales.filter(function (s) { return s.clientId === c.id; }).reduce(function (a, s) { return a + (Number(s.balance) || 0); }, 0);
+          return (
+            '<div class="card space-y-2">' +
+              '<div class="flex items-center justify-between"><strong style="font-size:15px;">' + c.name + '</strong><button type="button" onclick="openClientModal(\'' + c.id + '\')" class="btn btn-sm btn-light"><i class="fa-solid fa-pen"></i></button></div>' +
+              (c.phone ? '<div style="font-size:12px;color:var(--muted);">Tel: ' + c.phone + "</div>" : "") +
+              (c.email ? '<div style="font-size:12px;color:var(--muted);">Email: ' + c.email + "</div>" : "") +
+              '<div style="font-size:12px;border-top:1px solid #f1f5f9;padding-top:8px;">Crédito pendiente: <strong style="color:' + (due > 0 ? "#e11d48" : "#0f172a") + ';">' + fmtMoney(due) + "</strong></div>" +
+            "</div>"
+          );
+        }).join("");
+      };
+
+      // Receipts
+      function showSaleReceipt(sale) {
+        document.getElementById("print-area").innerHTML =
+          '<div style="text-align:center;border-bottom:1px solid #e2e8f0;padding-bottom:8px;"><strong>GestorPro · Venta ' + sale.folio + '</strong><div style="font-size:11px;color:#64748b;">Fecha: ' + sale.date + "</div></div>" +
+          '<div style="font-size:12px;">Cliente: <strong>' + sale.clientName + "</strong> · " + (sale.saleType === "credito" ? "A Crédito" : "Contado") + "</div>" +
+          (sale.items || []).map(function (i) { return '<div class="flex justify-between" style="font-size:12px;"><span>' + i.qty + "x " + i.name + "</span><strong>" + fmtMoney(i.qty * i.price) + "</strong></div>"; }).join("") +
+          '<div style="border-top:1px solid #e2e8f0;padding-top:8px;text-align:right;font-size:13px;">' +
+            "<div>Total: <strong>" + fmtMoney(sale.total) + "</strong></div>" +
+            '<div style="color:#059669;">Pagado: <strong>' + fmtMoney(sale.paid) + "</strong></div>" +
+            (sale.balance > 0 ? '<div style="color:#e11d48;">Saldo: <strong>' + fmtMoney(sale.balance) + "</strong></div>" : "") +
+          "</div>";
+        openModal("modal-receipt");
+      }
+
+      function showOrderReceipt(ord) {
+        document.getElementById("print-area").innerHTML =
+          '<div style="text-align:center;border-bottom:1px solid #e2e8f0;padding-bottom:8px;"><strong>GestorPro · Encargo ' + ord.code + '</strong><div style="font-size:11px;color:#64748b;">Entrega: ' + ord.deliveryDate + "</div></div>" +
+          '<div style="font-size:12px;">Cliente: <strong>' + ord.clientName + "</strong></div>" +
+          (ord.items || []).map(function (i) { return '<div class="flex justify-between" style="font-size:12px;"><span>' + i.qty + "x " + i.name + "</span><strong>" + fmtMoney(i.qty * i.price) + "</strong></div>"; }).join("") +
+          '<div style="border-top:1px solid #e2e8f0;padding-top:8px;text-align:right;font-size:13px;">' +
+            "<div>Total: <strong>" + fmtMoney(ord.total) + "</strong></div>" +
+            '<div style="color:#059669;">Anticipo: <strong>' + fmtMoney(ord.paid) + "</strong></div>" +
+            '<div style="color:#e11d48;">Saldo: <strong>' + fmtMoney(ord.balance) + "</strong></div>" +
+          "</div>";
+        openModal("modal-receipt");
+      }
+
+      // JSON Backup
+      window.exportFullJSON = function () {
+        const payload = { app: "GestorPro", workspaceId: currentWorkspaceId, exportedAt: new Date().toISOString(), data: STATE };
+        downloadBlob(new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }), "GestorPro_" + currentWorkspaceId + "_" + todayStr() + ".json");
+        showToast("Respaldo JSON descargado");
+      };
+
+      window.previewImportJSON = function (ev) {
+        const file = ev.target.files && ev.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          try {
+            const parsed = JSON.parse(e.target.result);
+            const d = parsed.data || parsed;
+            if (!d.products && !d.sales && !d.clients) throw new Error();
+            pendingImportData = d;
+            document.getElementById("json-import-preview").classList.remove("hidden");
+            document.getElementById("json-import-summary").textContent =
+              "Restaurar: " + (d.products || []).length + " productos, " + (d.clients || []).length + " clientes, " + (d.sales || []).length + " ventas, " + (d.orders || []).length + " encargos.";
+          } catch (err) {
+            showToast("Archivo JSON no válido");
+          }
+        };
+        reader.readAsText(file);
+      };
+
+      window.confirmImportJSON = function () {
+        if (!pendingImportData) return;
+        COLLECTIONS.forEach(function (col) {
+          if (Array.isArray(pendingImportData[col])) {
+            STATE[col] = pendingImportData[col];
+            saveLocalCache(col);
+          }
+        });
+        pendingImportData = null;
+        document.getElementById("json-import-preview").classList.add("hidden");
+        broadcastState();
+        refreshAllViews();
+        showToast("Datos restaurados");
+      };
+
+      // Dashboard & Refresh
+      function renderDashboard() {
+        const today = todayStr();
+        const totalRec = STATE.incomes.reduce(function (a, i) { return a + (Number(i.amount) || 0); }, 0);
+        const todayRec = STATE.incomes.filter(function (i) { return i.date === today; }).reduce(function (a, i) { return a + (Number(i.amount) || 0); }, 0);
+        const pendCred = STATE.sales.filter(function (s) { return s.balance > 0; });
+        const credDue = pendCred.reduce(function (a, s) { return a + (Number(s.balance) || 0); }, 0);
+        const actOrd = STATE.orders.filter(function (o) { return o.status !== "Entregado" && o.status !== "Cancelado"; });
+        const ordDue = actOrd.reduce(function (a, o) { return a + (Number(o.balance) || 0); }, 0);
+        const salesTot = STATE.sales.reduce(function (a, s) { return a + (Number(s.total) || 0); }, 0);
+        const invVal = STATE.products.reduce(function (a, p) { return a + (Number(p.price) || 0) * (Number(p.stock) || 0); }, 0);
+        const lowProds = STATE.products.filter(function (p) { return p.stock <= (p.minStock || 5); });
+
+        document.getElementById("kpi-received").textContent = fmtMoney(totalRec);
+        document.getElementById("kpi-received-today").textContent = "Hoy: " + fmtMoney(todayRec);
+        document.getElementById("kpi-credit-due").textContent = fmtMoney(credDue);
+        document.getElementById("kpi-credit-count").textContent = pendCred.length + " pendientes";
+        document.getElementById("kpi-orders-active").textContent = actOrd.length;
+        document.getElementById("kpi-orders-due").textContent = "Saldo: " + fmtMoney(ordDue);
+        document.getElementById("kpi-sales-total").textContent = fmtMoney(salesTot);
+        document.getElementById("kpi-sales-count").textContent = STATE.sales.length + " ventas";
+        document.getElementById("kpi-inv-value").textContent = fmtMoney(invVal);
+        document.getElementById("kpi-low-stock").textContent = lowProds.length + " bajo stock";
+
+        ["badge-orders", "mbadge-orders"].forEach(function (id) {
+          const el = document.getElementById(id);
+          if (el) {
+            el.textContent = actOrd.length;
+            el.classList.toggle("hidden", actOrd.length === 0);
+          }
+        });
+        ["badge-credits", "mbadge-credits"].forEach(function (id) {
+          const el = document.getElementById(id);
+          if (el) {
+            el.textContent = pendCred.length;
+            el.classList.toggle("hidden", pendCred.length === 0);
+          }
+        });
+
+        document.getElementById("dash-low-stock-list").innerHTML = lowProds.length === 0
+          ? '<div style="font-size:12px;color:var(--muted);">Todo el inventario con stock saludable</div>'
+          : lowProds.slice(0, 5).map(function (p) {
+              return '<div class="flex items-center justify-between" style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:8px 10px;font-size:12px;"><strong>' + p.name + '</strong><span class="badge badge-due">Stock: ' + p.stock + "</span></div>";
+            }).join("");
+
+        document.getElementById("dash-recent-sales").innerHTML = STATE.sales.length === 0
+          ? '<div style="font-size:12px;color:var(--muted);">Sin ventas aún</div>'
+          : STATE.sales.slice(0, 5).map(function (s) {
+              return '<div class="flex items-center justify-between" style="background:#f8fafc;border-radius:10px;padding:8px 10px;font-size:12px;"><span><strong>' + s.folio + "</strong> · " + s.clientName + "</span><strong>" + fmtMoney(s.total) + "</strong></div>";
+            }).join("");
+      }
+
+      function refreshAllViews() {
+        populateClientSelects();
+        renderDashboard();
+        renderPosCatalog();
+        renderCart();
+        renderOrders();
+        renderCredits();
+        renderIncomes();
+        renderSalesHistory();
+        renderInventory();
+        renderClients();
+
+        const _cfg = getCloudConfig();
+        if (document.getElementById("cloud-endpoint-input")) document.getElementById("cloud-endpoint-input").value = _cfg.endpoint || getCloudEndpoint() || "";
+        if (document.getElementById("cloud-apikey-input")) document.getElementById("cloud-apikey-input").value = _cfg.apiKey || "";
+        if (document.getElementById("cloud-autosync-check")) document.getElementById("cloud-autosync-check").checked = _cfg.autoSync !== false;
+        document.getElementById("workspace-id-input").value = currentWorkspaceId;
+        const sideWs = document.getElementById("sidebar-ws-name");
+        if (sideWs) sideWs.textContent = currentWorkspaceId;
+        const base = window.location.href.split("?")[0];
+        document.getElementById("share-workspace-url").value = base + "?ws=" + encodeURIComponent(currentWorkspaceId);
+        document.getElementById("bk-count-products").textContent = STATE.products.length;
+        document.getElementById("bk-count-sales").textContent = STATE.sales.length;
+        document.getElementById("bk-count-orders").textContent = STATE.orders.length;
+      }
+
+      loadLocalCache();
+      setSaleType("contado");
+      switchTab("dashboard");
+      setSyncStatus(navigator.onLine ? "online" : "local", (navigator.onLine ? "En línea · " : "Local · ") + currentWorkspaceId);
+    })();
+  </script>
+</body>
+</html>
