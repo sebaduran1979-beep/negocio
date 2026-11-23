@@ -13,6 +13,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
+    /* Design tokens and base layout */
     :root {
       --bg: #f8fafc;
       --surface: #ffffff;
@@ -25,217 +26,79 @@
       --success: #059669;
       --danger: #e11d48;
       --warning: #d97706;
-      --sidebar-w: 248px;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       background-color: var(--bg);
       color: var(--ink);
       padding-bottom: 84px;
       -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
     }
-    @media (min-width: 768px) {
-      body { padding-bottom: 32px; }
-    }
+    @media (min-width: 768px) { body { padding-bottom: 32px; } }
     .hidden { display: none !important; }
     .touch-btn { min-height: 44px; cursor: pointer; }
     button { cursor: pointer; }
     input, select, textarea { font-family: inherit; }
 
-    /* Top Bar */
-    .gp-header {
-      background: #0f172a;
-      color: #fff;
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      box-shadow: 0 2px 8px rgba(15,23,42,.18);
-    }
-    .gp-topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 58px;
-      gap: 10px;
-      padding: 6px 14px;
-    }
-    @media (min-width: 640px) {
-      .gp-topbar { padding: 6px 24px; }
-    }
-    .gp-brand { display: flex; align-items: center; gap: 10px; }
-    .gp-logo {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: #4f46e5;
-      color: #fff;
-      font-weight: 800;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    /* Desktop Shell with Left Sidebar */
-    .gp-shell {
-      display: flex;
-      min-height: calc(100vh - 58px);
-      width: 100%;
-    }
+    /* Left sidebar layout on desktop + mobile bottom navigation */
+    .gp-shell { display: flex; min-height: calc(100vh - 56px); width: 100%; }
     .gp-sidebar {
       display: none;
+      width: 244px;
+      flex-shrink: 0;
+      background: #0f172a;
+      color: #e2e8f0;
+      border-right: 1px solid #1e293b;
+      padding: 14px 10px;
     }
     @media (min-width: 768px) {
       .gp-sidebar {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        width: var(--sidebar-w);
-        min-width: var(--sidebar-w);
-        background: #0f172a;
-        color: #cbd5e1;
-        border-right: 1px solid #1e293b;
         position: sticky;
-        top: 58px;
-        height: calc(100vh - 58px);
+        top: 56px;
+        height: calc(100vh - 56px);
         overflow-y: auto;
-        padding: 14px 12px;
-        z-index: 30;
       }
+      .gp-nav-desktop { display: none !important; }
     }
-    .gp-sidebar-label {
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #64748b;
-      padding: 6px 10px 4px;
-    }
-    .gp-sidebar-list {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .tab-btn {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #cbd5e1;
-      background: transparent;
-      border: 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      text-align: left;
-      transition: background 0.15s ease, color 0.15s ease;
-    }
-    .tab-btn .tab-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-    .tab-btn i {
-      width: 18px;
-      text-align: center;
-      color: #94a3b8;
-      flex-shrink: 0;
-    }
-    .tab-btn:hover {
-      background: #1e293b;
-      color: #fff;
-    }
-    .tab-btn:hover i {
-      color: #e2e8f0;
-    }
-    .tab-btn.active {
-      background: #4f46e5;
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(79,70,229,0.35);
-    }
-    .tab-btn.active i {
-      color: #fff;
-    }
+    .gp-sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
+    .gp-sidebar .tab-btn { width: 100%; justify-content: flex-start; padding: 10px 12px; border-radius: 10px; font-size: 13px; }
+    .gp-sidebar-footer { padding-top: 12px; border-top: 1px solid #1e293b; font-size: 11px; color: #94a3b8; }
+    .gp-main-col { flex: 1; min-width: 0; width: 100%; }
 
-    .gp-main-wrap {
-      flex: 1;
-      min-width: 0;
-      width: 100%;
-    }
-    .gp-container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 14px;
-    }
-    @media (min-width: 640px) {
-      .gp-container { padding: 0 24px; }
-    }
-
-    /* Mobile Bottom Navigation */
-    .gp-nav-mobile {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 62px;
-      background: #fff;
-      border-top: 1px solid var(--border);
-      z-index: 40;
-      box-shadow: 0 -2px 10px rgba(0,0,0,.06);
-    }
-    @media (min-width: 768px) {
-      .gp-nav-mobile { display: none; }
-    }
-    .mtab-btn {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--muted);
-      background: transparent;
-      border: 0;
-    }
+    .gp-header { background: #0f172a; color: #fff; position: sticky; top: 0; z-index: 40; box-shadow: 0 2px 8px rgba(15,23,42,.18); }
+    .gp-container { max-width: 1280px; margin: 0 auto; padding: 0 14px; }
+    @media (min-width: 640px) { .gp-container { padding: 0 24px; } }
+    .gp-topbar { display: flex; align-items: center; justify-content: space-between; min-height: 56px; gap: 8px; }
+    .gp-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .gp-logo { width: 36px; height: 36px; border-radius: 10px; background: #4f46e5; color: #fff; font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .gp-nav-desktop { display: none; gap: 4px; padding-bottom: 8px; overflow-x: auto; flex-wrap: wrap; }
+    @media (min-width: 768px) { .gp-nav-desktop { display: flex; } }
+    .gp-nav-mobile { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; bottom: 0; left: 0; right: 0; height: 64px; background: #fff; border-top: 1px solid var(--border); z-index: 40; box-shadow: 0 -2px 10px rgba(0,0,0,.06); }
+    @media (min-width: 768px) { .gp-nav-mobile { display: none; } }
+    .mtab-btn { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 11px; font-weight: 600; color: var(--muted); background: transparent; border: 0; padding: 4px 2px; }
     .mtab-btn.active { color: var(--primary); }
+    .tab-btn { padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #cbd5e1; background: transparent; border: 0; display: inline-flex; align-items: center; gap: 8px; }
+    .tab-btn:hover { background: #1e293b; color: #fff; }
+    .tab-btn.active { background: #4f46e5; color: #fff; }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 1px 3px rgba(15,23,42,.04);
-    }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; box-shadow: 0 1px 3px rgba(15,23,42,.04); }
     .grid-2 { display: grid; grid-template-columns: 1fr; gap: 14px; }
     @media (min-width: 768px) { .grid-2 { grid-template-columns: repeat(2, 1fr); } }
-    .grid-3 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 640px) { .grid-3 { grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 1024px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
     .grid-5 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
     @media (min-width: 1024px) { .grid-5 { grid-template-columns: repeat(5, 1fr); } }
     .pos-layout { display: grid; grid-template-columns: 1fr; gap: 18px; }
     @media (min-width: 1024px) { .pos-layout { grid-template-columns: 7fr 5fr; align-items: start; } }
 
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 9px 14px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 700;
-      border: 1px solid transparent;
-    }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 14px; border-radius: 10px; font-size: 13px; font-weight: 700; border: 1px solid transparent; }
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover { background: var(--primary-hover); }
     .btn-success { background: var(--success); color: #fff; }
@@ -244,36 +107,13 @@
     .btn-light { background: var(--surface-alt); color: var(--ink); border-color: var(--border); }
     .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 8px; }
 
-    .input, .select, .textarea {
-      width: 100%;
-      padding: 9px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 10px;
-      font-size: 13px;
-      background: #fff;
-      color: var(--ink);
-    }
+    .input, .select, .textarea { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; background: #fff; color: var(--ink); }
     .input:focus, .select:focus, .textarea:focus { outline: 2px solid #6366f1; border-color: #6366f1; }
-    .label {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      color: #475569;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
+    .label { display: block; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 4px; }
 
-    .table-wrap { overflow-x: auto; }
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th {
-      text-align: left;
-      padding: 10px 12px;
-      font-size: 11px;
-      text-transform: uppercase;
-      color: var(--muted);
-      background: #f8fafc;
-      border-bottom: 1px solid var(--border);
-    }
+    th { text-align: left; padding: 10px 12px; font-size: 11px; text-transform: uppercase; color: var(--muted); background: #f8fafc; border-bottom: 1px solid var(--border); white-space: nowrap; }
     td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
     .text-right { text-align: right; }
     .text-center { text-align: center; }
@@ -288,27 +128,8 @@
     .space-y-4 > * + * { margin-top: 16px; }
     .space-y-5 > * + * { margin-top: 20px; }
 
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(15,23,42,.55);
-      z-index: 60;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 14px;
-      overflow-y: auto;
-    }
-    .modal-box {
-      background: #fff;
-      border-radius: 18px;
-      width: 100%;
-      max-width: 680px;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 20px;
-      box-shadow: 0 20px 45px rgba(0,0,0,.25);
-    }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.55); z-index: 60; display: flex; align-items: center; justify-content: center; padding: 14px; overflow-y: auto; }
+    .modal-box { background: #fff; border-radius: 18px; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; padding: 20px; box-shadow: 0 20px 45px rgba(0,0,0,.25); }
     .modal-sm { max-width: 440px; }
 
     .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
@@ -317,32 +138,10 @@
     .badge-due { background: #ffe4e6; color: #9f1239; }
     .badge-info { background: #e0e7ff; color: #3730a3; }
 
-    .sync-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 6px 12px;
-      border-radius: 999px;
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #f8fafc;
-      font-size: 12px;
-    }
-    .sync-dot { width: 9px; height: 9px; border-radius: 50%; background: #34d399; }
+    .sync-pill { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border-radius: 999px; background: #1e293b; border: 1px solid #334155; color: #f8fafc; font-size: 11px; }
+    .sync-dot { width: 9px; height: 9px; border-radius: 50%; background: #34d399; flex-shrink: 0; }
 
-    #toast {
-      position: fixed;
-      top: 68px;
-      right: 16px;
-      z-index: 90;
-      background: #0f172a;
-      color: #fff;
-      padding: 11px 16px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 700;
-      box-shadow: 0 10px 25px rgba(0,0,0,.25);
-    }
+    #toast { position: fixed; top: 68px; right: 16px; left: 16px; max-width: 420px; margin-left: auto; z-index: 90; background: #0f172a; color: #fff; padding: 12px 16px; border-radius: 12px; font-size: 12px; font-weight: 700; box-shadow: 0 10px 25px rgba(0,0,0,.25); }
 
     @media print {
       body * { visibility: hidden !important; }
@@ -355,133 +154,158 @@
 
   <!-- TOP HEADER -->
   <header class="gp-header">
-    <div class="gp-topbar">
-      <div class="gp-brand">
-        <div class="gp-logo">G</div>
-        <div>
-          <div style="font-weight:800;font-size:16px;line-height:1.15;">GestorPro</div>
-          <div style="font-size:11px;color:#94a3b8;">Ventas · Inventario · Encargos · Créditos</div>
+    <div class="gp-container">
+      <div class="gp-topbar">
+        <div class="gp-brand">
+          <div class="gp-logo">G</div>
+          <div style="min-width:0;">
+            <div style="font-weight:800;font-size:16px;line-height:1.15;">GestorPro</div>
+            <div style="font-size:11px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Ventas · Inventario · Encargos · Créditos</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2" style="flex-shrink:0;">
+          <button type="button" onclick="openSyncModal()" class="sync-pill" title="Configurar sincronización en línea">
+            <span id="sync-dot" class="sync-dot"></span>
+            <span id="sync-label" style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">En línea</span>
+            <i class="fa-solid fa-cloud" style="color:#818cf8;"></i>
+          </button>
+          <button type="button" id="btn-install-app" onclick="triggerInstallApp()" class="btn btn-sm btn-primary touch-btn" title="Instalar como App">
+            <i class="fa-solid fa-mobile-screen-button"></i> <span id="install-app-text">App</span>
+          </button>
+          <button type="button" onclick="switchTab('backup')" class="btn btn-sm btn-light touch-btn" title="Respaldo y Nube">
+            <i class="fa-solid fa-gear"></i>
+          </button>
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <button type="button" onclick="openSyncModal()" class="sync-pill" title="Configurar sincronización en línea">
-          <span id="sync-dot" class="sync-dot"></span>
-          <span id="sync-label" style="max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">En línea</span>
-          <i class="fa-solid fa-cloud" style="color:#818cf8;"></i>
+      <!-- FALLBACK DESKTOP NAVIGATION -->
+      <nav class="gp-nav-desktop">
+        <button type="button" onclick="switchTab('dashboard')" data-tab="dashboard" class="tab-btn active">
+          <i class="fa-solid fa-chart-pie"></i> Panel
         </button>
-        <button type="button" id="btn-install-app" onclick="triggerInstallApp()" class="btn btn-sm btn-primary" title="Instalar como App">
-          <i class="fa-solid fa-mobile-screen-button"></i> <span id="install-app-text">App</span>
+        <button type="button" onclick="switchTab('pos')" data-tab="pos" class="tab-btn">
+          <i class="fa-solid fa-cash-register"></i> Vender (POS)
         </button>
-        <button type="button" onclick="switchTab('backup')" class="btn btn-sm btn-light" title="Respaldo y Nube">
-          <i class="fa-solid fa-gear"></i>
+        <button type="button" onclick="switchTab('orders')" data-tab="orders" class="tab-btn">
+          <i class="fa-solid fa-clipboard-list"></i> Encargos
+          <span id="badge-orders" class="badge badge-warn hidden">0</span>
         </button>
-      </div>
+        <button type="button" onclick="switchTab('credits')" data-tab="credits" class="tab-btn">
+          <i class="fa-solid fa-hand-holding-dollar"></i> Créditos y Abonos
+          <span id="badge-credits" class="badge badge-due hidden">0</span>
+        </button>
+        <button type="button" onclick="switchTab('incomes')" data-tab="incomes" class="tab-btn">
+          <i class="fa-solid fa-sack-dollar"></i> Dineros Recibidos
+        </button>
+        <button type="button" onclick="switchTab('sales')" data-tab="sales" class="tab-btn">
+          <i class="fa-solid fa-receipt"></i> Historial Ventas
+        </button>
+        <button type="button" onclick="switchTab('inventory')" data-tab="inventory" class="tab-btn">
+          <i class="fa-solid fa-boxes-stacked"></i> Inventario
+        </button>
+        <button type="button" onclick="switchTab('clients')" data-tab="clients" class="tab-btn">
+          <i class="fa-solid fa-users"></i> Clientes
+        </button>
+        <button type="button" onclick="switchTab('backup')" data-tab="backup" class="tab-btn">
+          <i class="fa-solid fa-database"></i> Nube / JSON
+        </button>
+      </nav>
     </div>
   </header>
 
-  <!-- APP SHELL: LEFT SIDEBAR ON DESKTOP + MAIN CONTENT -->
-  <div class="gp-shell">
-    <!-- LEFT SIDEBAR NAVIGATION (DESKTOP) -->
-    <aside class="gp-sidebar" aria-label="Menú lateral principal">
-      <div class="space-y-3">
-        <div class="gp-sidebar-label">Operación</div>
-        <nav class="gp-sidebar-list">
-          <button type="button" onclick="switchTab('dashboard')" data-tab="dashboard" class="tab-btn active">
-            <span class="tab-left"><i class="fa-solid fa-chart-pie"></i> <span>Panel</span></span>
-          </button>
-          <button type="button" onclick="switchTab('pos')" data-tab="pos" class="tab-btn">
-            <span class="tab-left"><i class="fa-solid fa-cash-register"></i> <span>Vender (POS)</span></span>
-          </button>
-          <button type="button" onclick="switchTab('orders')" data-tab="orders" class="tab-btn">
-            <span class="tab-left"><i class="fa-solid fa-clipboard-list"></i> <span>Encargos</span></span>
-            <span id="badge-orders" class="badge badge-warn hidden">0</span>
-          </button>
-          <button type="button" onclick="switchTab('credits')" data-tab="credits" class="tab-btn">
-            <span class="tab-left"><i class="fa-solid fa-hand-holding-dollar"></i> <span>Créditos y Abonos</span></span>
-            <span id="badge-credits" class="badge badge-due hidden">0</span>
-          </button>
-          <button type="button" onclick="switchTab('incomes')" data-tab="incomes" class="tab-btn">
-            <span class="tab-left"><i class="fa-solid fa-sack-dollar"></i> <span>Dineros Recibidos</span></span>
-          </button>
-          <button type="button" onclick="switchTab('sales')" data-tab="sales" class="tab-btn">
-            <span class="tab-left"><i class="fa-solid fa-receipt"></i> <span>Historial Ventas</span></span>
-          </button>
-        </nav>
-
-        <div class="gp-sidebar-label">Catálogo y Datos</div>
-        <nav class="gp-sidebar-list">
-          <button type="button" onclick="switchTab('inventory')" data-tab="inventory" class="tab-btn">
-            <span class="tab-left"><i class="fa-solid fa-boxes-stacked"></i> <span>Inventario</span></span>
-          </button>
-          <button type="button" onclick="switchTab('clients')" data-tab="clients" class="tab-btn">
-            <span class="tab-left"><i class="fa-solid fa-users"></i> <span>Clientes</span></span>
-          </button>
-          <button type="button" onclick="switchTab('backup')" data-tab="backup" class="tab-btn">
-            <span class="tab-left"><i class="fa-solid fa-database"></i> <span>Nube / JSON</span></span>
-          </button>
-        </nav>
+  <!-- MOBILE MORE DRAWER -->
+  <div id="mobile-more-drawer" class="modal-backdrop hidden" onclick="toggleMobileMore(false)">
+    <div class="modal-box modal-sm" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between" style="border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:12px;">
+        <strong style="font-size:14px;">Más Módulos</strong>
+        <button type="button" onclick="toggleMobileMore(false)" class="btn btn-sm btn-light touch-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
+      <div class="grid-3">
+        <button type="button" onclick="switchTab('dashboard');toggleMobileMore(false)" class="btn btn-light touch-btn" style="flex-direction:column;padding:12px;">
+          <i class="fa-solid fa-chart-pie"></i><span>Panel</span>
+        </button>
+        <button type="button" onclick="switchTab('incomes');toggleMobileMore(false)" class="btn btn-light touch-btn" style="flex-direction:column;padding:12px;">
+          <i class="fa-solid fa-sack-dollar"></i><span>Recibidos</span>
+        </button>
+        <button type="button" onclick="switchTab('sales');toggleMobileMore(false)" class="btn btn-light touch-btn" style="flex-direction:column;padding:12px;">
+          <i class="fa-solid fa-receipt"></i><span>Ventas</span>
+        </button>
+        <button type="button" onclick="switchTab('inventory');toggleMobileMore(false)" class="btn btn-light touch-btn" style="flex-direction:column;padding:12px;">
+          <i class="fa-solid fa-boxes-stacked"></i><span>Inventario</span>
+        </button>
+        <button type="button" onclick="switchTab('clients');toggleMobileMore(false)" class="btn btn-light touch-btn" style="flex-direction:column;padding:12px;">
+          <i class="fa-solid fa-users"></i><span>Clientes</span>
+        </button>
+        <button type="button" onclick="switchTab('backup');toggleMobileMore(false)" class="btn btn-light touch-btn" style="flex-direction:column;padding:12px;">
+          <i class="fa-solid fa-database"></i><span>Nube/JSON</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
-      <div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:10px;font-size:11px;color:#94a3b8;">
-        <div style="font-weight:700;color:#e2e8f0;margin-bottom:2px;">Espacio Activo</div>
-        <div id="sidebar-ws-name" style="font-family:monospace;color:#a5b4fc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">control_integral_de_negocio</div>
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="gp-nav-mobile" aria-label="Navegación móvil">
+    <button type="button" onclick="switchTab('pos')" data-mtab="pos" class="mtab-btn">
+      <i class="fa-solid fa-cash-register"></i><span>Vender</span>
+    </button>
+    <button type="button" onclick="switchTab('orders')" data-mtab="orders" class="mtab-btn">
+      <i class="fa-solid fa-clipboard-list"></i><span>Encargos</span>
+      <span id="mbadge-orders" class="badge badge-warn hidden" style="position:absolute;top:3px;right:10px;padding:1px 5px;font-size:10px;">0</span>
+    </button>
+    <button type="button" onclick="switchTab('credits')" data-mtab="credits" class="mtab-btn">
+      <i class="fa-solid fa-hand-holding-dollar"></i><span>Créditos</span>
+      <span id="mbadge-credits" class="badge badge-due hidden" style="position:absolute;top:3px;right:10px;padding:1px 5px;font-size:10px;">0</span>
+    </button>
+    <button type="button" onclick="switchTab('incomes')" data-mtab="incomes" class="mtab-btn">
+      <i class="fa-solid fa-sack-dollar"></i><span>Recibidos</span>
+    </button>
+    <button type="button" onclick="toggleMobileMore()" class="mtab-btn">
+      <i class="fa-solid fa-bars"></i><span>Más</span>
+    </button>
+  </nav>
+
+  <!-- MAIN CONTENT SHELL WITH LEFT SIDEBAR -->
+  <div class="gp-shell">
+    <aside class="gp-sidebar" aria-label="Menú lateral">
+      <nav class="gp-sidebar-nav">
+        <button type="button" onclick="switchTab('dashboard')" data-tab="dashboard" class="tab-btn active">
+          <i class="fa-solid fa-chart-pie"></i> Panel
+        </button>
+        <button type="button" onclick="switchTab('pos')" data-tab="pos" class="tab-btn">
+          <i class="fa-solid fa-cash-register"></i> Vender (POS)
+        </button>
+        <button type="button" onclick="switchTab('orders')" data-tab="orders" class="tab-btn">
+          <i class="fa-solid fa-clipboard-list"></i> Encargos
+          <span id="sbadge-orders" class="badge badge-warn hidden" style="margin-left:auto;">0</span>
+        </button>
+        <button type="button" onclick="switchTab('credits')" data-tab="credits" class="tab-btn">
+          <i class="fa-solid fa-hand-holding-dollar"></i> Créditos y Abonos
+          <span id="sbadge-credits" class="badge badge-due hidden" style="margin-left:auto;">0</span>
+        </button>
+        <button type="button" onclick="switchTab('incomes')" data-tab="incomes" class="tab-btn">
+          <i class="fa-solid fa-sack-dollar"></i> Dineros Recibidos
+        </button>
+        <button type="button" onclick="switchTab('sales')" data-tab="sales" class="tab-btn">
+          <i class="fa-solid fa-receipt"></i> Historial Ventas
+        </button>
+        <button type="button" onclick="switchTab('inventory')" data-tab="inventory" class="tab-btn">
+          <i class="fa-solid fa-boxes-stacked"></i> Inventario
+        </button>
+        <button type="button" onclick="switchTab('clients')" data-tab="clients" class="tab-btn">
+          <i class="fa-solid fa-users"></i> Clientes
+        </button>
+        <button type="button" onclick="switchTab('backup')" data-tab="backup" class="tab-btn">
+          <i class="fa-solid fa-database"></i> Nube / JSON
+        </button>
+      </nav>
+      <div class="gp-sidebar-footer">
+        <div>Navegación lateral activa</div>
+        <div id="sidebar-ws-label" style="color:#cbd5e1;font-weight:700;margin-top:2px;word-break:break-all;">control_integral_de_negocio</div>
       </div>
     </aside>
 
-    <!-- MOBILE MORE DRAWER -->
-    <div id="mobile-more-drawer" class="modal-backdrop hidden" onclick="toggleMobileMore(false)">
-      <div class="modal-box modal-sm" onclick="event.stopPropagation()">
-        <div class="flex items-center justify-between" style="border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:12px;">
-          <strong style="font-size:14px;">Más Módulos</strong>
-          <button type="button" onclick="toggleMobileMore(false)" class="btn btn-sm btn-light"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="grid-3">
-          <button type="button" onclick="switchTab('dashboard');toggleMobileMore(false)" class="btn btn-light" style="flex-direction:column;padding:12px;">
-            <i class="fa-solid fa-chart-pie"></i><span>Panel</span>
-          </button>
-          <button type="button" onclick="switchTab('incomes');toggleMobileMore(false)" class="btn btn-light" style="flex-direction:column;padding:12px;">
-            <i class="fa-solid fa-sack-dollar"></i><span>Recibidos</span>
-          </button>
-          <button type="button" onclick="switchTab('sales');toggleMobileMore(false)" class="btn btn-light" style="flex-direction:column;padding:12px;">
-            <i class="fa-solid fa-receipt"></i><span>Ventas</span>
-          </button>
-          <button type="button" onclick="switchTab('inventory');toggleMobileMore(false)" class="btn btn-light" style="flex-direction:column;padding:12px;">
-            <i class="fa-solid fa-boxes-stacked"></i><span>Inventario</span>
-          </button>
-          <button type="button" onclick="switchTab('clients');toggleMobileMore(false)" class="btn btn-light" style="flex-direction:column;padding:12px;">
-            <i class="fa-solid fa-users"></i><span>Clientes</span>
-          </button>
-          <button type="button" onclick="switchTab('backup');toggleMobileMore(false)" class="btn btn-light" style="flex-direction:column;padding:12px;">
-            <i class="fa-solid fa-database"></i><span>Nube/JSON</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MOBILE BOTTOM NAV -->
-    <nav class="gp-nav-mobile" aria-label="Navegación móvil">
-      <button type="button" onclick="switchTab('pos')" data-mtab="pos" class="mtab-btn">
-        <i class="fa-solid fa-cash-register"></i><span>Vender</span>
-      </button>
-      <button type="button" onclick="switchTab('orders')" data-mtab="orders" class="mtab-btn">
-        <i class="fa-solid fa-clipboard-list"></i><span>Encargos</span>
-        <span id="mbadge-orders" class="badge badge-warn hidden" style="position:absolute;top:3px;right:12px;padding:1px 5px;font-size:10px;">0</span>
-      </button>
-      <button type="button" onclick="switchTab('credits')" data-mtab="credits" class="mtab-btn">
-        <i class="fa-solid fa-hand-holding-dollar"></i><span>Créditos</span>
-        <span id="mbadge-credits" class="badge badge-due hidden" style="position:absolute;top:3px;right:12px;padding:1px 5px;font-size:10px;">0</span>
-      </button>
-      <button type="button" onclick="switchTab('incomes')" data-mtab="incomes" class="mtab-btn">
-        <i class="fa-solid fa-sack-dollar"></i><span>Recibidos</span>
-      </button>
-      <button type="button" onclick="toggleMobileMore()" class="mtab-btn">
-        <i class="fa-solid fa-bars"></i><span>Más</span>
-      </button>
-    </nav>
-
-    <!-- MAIN CONTENT -->
-    <div class="gp-main-wrap">
+    <div class="gp-main-col">
       <main class="gp-container" style="padding-top:18px;">
 
         <!-- 1. DASHBOARD -->
@@ -529,7 +353,7 @@
             <div class="card space-y-3">
               <div class="flex items-center justify-between">
                 <strong style="font-size:14px;"><i class="fa-solid fa-triangle-exclamation" style="color:#d97706;"></i> Alertas de Stock Bajo</strong>
-                <button type="button" onclick="switchTab('inventory')" class="btn btn-sm btn-light">Ver inventario</button>
+                <button type="button" onclick="switchTab('inventory')" class="btn btn-sm btn-light touch-btn">Ver inventario</button>
               </div>
               <div id="dash-low-stock-list" class="space-y-2"></div>
             </div>
@@ -537,7 +361,7 @@
             <div class="card space-y-3">
               <div class="flex items-center justify-between">
                 <strong style="font-size:14px;"><i class="fa-solid fa-clock-rotate-left" style="color:#4f46e5;"></i> Últimas Ventas</strong>
-                <button type="button" onclick="switchTab('sales')" class="btn btn-sm btn-light">Ver historial</button>
+                <button type="button" onclick="switchTab('sales')" class="btn btn-sm btn-light touch-btn">Ver historial</button>
               </div>
               <div id="dash-recent-sales" class="space-y-2"></div>
             </div>
@@ -549,8 +373,8 @@
           <div class="pos-layout">
             <div class="space-y-3">
               <div class="card">
-                <div class="flex gap-2">
-                  <input id="pos-search" type="text" oninput="renderPosCatalog()" placeholder="Buscar producto por nombre o SKU..." class="input" style="flex:1;" />
+                <div class="flex flex-wrap gap-2">
+                  <input id="pos-search" type="text" oninput="renderPosCatalog()" placeholder="Buscar producto por nombre o SKU..." class="input" style="flex:1;min-width:180px;" />
                   <select id="pos-category-filter" onchange="renderPosCatalog()" class="select" style="width:auto;min-width:120px;">
                     <option value="">Todas</option>
                   </select>
@@ -562,7 +386,7 @@
             <div class="card space-y-4">
               <div class="flex items-center justify-between" style="border-bottom:1px solid var(--border);padding-bottom:10px;">
                 <strong style="font-size:15px;"><i class="fa-solid fa-cart-shopping" style="color:#4f46e5;"></i> Carrito de Venta</strong>
-                <button type="button" onclick="clearCart()" class="btn btn-sm btn-light" style="color:#e11d48;">Vaciar</button>
+                <button type="button" onclick="clearCart()" class="btn btn-sm btn-light touch-btn" style="color:#e11d48;">Vaciar</button>
               </div>
 
               <div class="space-y-2">
@@ -571,7 +395,7 @@
                   <select id="pos-client" onchange="onPosClientChange()" class="select" style="flex:1;">
                     <option value="">Cliente General (Mostrador)</option>
                   </select>
-                  <button type="button" onclick="toggleQuickClientForm('pos')" class="btn btn-sm btn-light">+ Cliente Rápido</button>
+                  <button type="button" onclick="toggleQuickClientForm('pos')" class="btn btn-sm btn-light touch-btn">+ Cliente Rápido</button>
                 </div>
                 <div id="pos-quick-client-box" class="hidden space-y-2" style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px;padding:10px;">
                   <div style="font-size:12px;font-weight:700;color:#312e81;">Crear Cliente Rápido</div>
@@ -580,8 +404,8 @@
                     <input id="qc-pos-phone" type="text" placeholder="Teléfono / WhatsApp" class="input" />
                   </div>
                   <div class="flex justify-end gap-2">
-                    <button type="button" onclick="toggleQuickClientForm('pos', false)" class="btn btn-sm btn-light">Cancelar</button>
-                    <button type="button" onclick="saveQuickClient('pos')" class="btn btn-sm btn-primary">Guardar y Elegir</button>
+                    <button type="button" onclick="toggleQuickClientForm('pos', false)" class="btn btn-sm btn-light touch-btn">Cancelar</button>
+                    <button type="button" onclick="saveQuickClient('pos')" class="btn btn-sm btn-primary touch-btn">Guardar y Elegir</button>
                   </div>
                 </div>
               </div>
@@ -717,8 +541,8 @@
           <div class="card">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="flex gap-2">
-                <button type="button" id="cred-tab-invoices" onclick="setCreditViewMode('invoices')" class="btn btn-sm btn-primary">Detalle por Venta</button>
-                <button type="button" id="cred-tab-clients" onclick="setCreditViewMode('clients')" class="btn btn-sm btn-light">Resumen por Cliente</button>
+                <button type="button" id="cred-tab-invoices" onclick="setCreditViewMode('invoices')" class="btn btn-sm btn-primary touch-btn">Detalle por Venta</button>
+                <button type="button" id="cred-tab-clients" onclick="setCreditViewMode('clients')" class="btn btn-sm btn-light touch-btn">Resumen por Cliente</button>
               </div>
               <input id="cred-search" type="text" oninput="renderCredits()" placeholder="Buscar cliente o folio..." class="input" style="max-width:260px;" />
             </div>
@@ -879,14 +703,14 @@
                 <label class="label">Código de Espacio / Negocio</label>
                 <div class="flex gap-2">
                   <input id="workspace-id-input" type="text" class="input" style="font-family:monospace;font-weight:700;" />
-                  <button type="button" onclick="saveWorkspaceId()" class="btn btn-primary">Conectar</button>
+                  <button type="button" onclick="saveWorkspaceId()" class="btn btn-primary touch-btn">Conectar</button>
                 </div>
               </div>
               <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:12px;" class="space-y-2">
                 <div style="font-size:12px;font-weight:700;">Enlace Directo para Celular</div>
                 <div class="flex gap-2">
                   <input id="share-workspace-url" type="text" readonly class="input" style="font-family:monospace;font-size:11px;" />
-                  <button type="button" onclick="copyWorkspaceUrl()" class="btn btn-sm btn-light">Copiar</button>
+                  <button type="button" onclick="copyWorkspaceUrl()" class="btn btn-sm btn-light touch-btn">Copiar</button>
                 </div>
               </div>
               <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:12px;" class="space-y-2">
@@ -895,14 +719,14 @@
                 <input id="cloud-apikey-input" type="password" placeholder="Clave API / Secret / Token (opcional)" class="input" style="font-size:12px;" />
                 <textarea id="cloud-json-creds-input" rows="3" placeholder='Opcional: pega aquí tu JSON de credenciales (ej. {"databaseURL":"https://...","secret":"..."})' class="textarea" style="font-size:11px;font-family:monospace;"></textarea>
                 <div class="flex gap-2">
-                  <button type="button" onclick="applyJsonCredentialsPaste()" class="btn btn-sm btn-light" style="flex:1;">Cargar JSON</button>
-                  <button type="button" onclick="saveCloudSettings()" class="btn btn-sm btn-primary" style="flex:1;">Guardar y Sincronizar</button>
+                  <button type="button" onclick="applyJsonCredentialsPaste()" class="btn btn-sm btn-light touch-btn" style="flex:1;">Cargar JSON</button>
+                  <button type="button" onclick="saveCloudSettings()" class="btn btn-sm btn-primary touch-btn" style="flex:1;">Guardar y Sincronizar</button>
                 </div>
                 <label class="flex items-center gap-2" style="font-size:12px;font-weight:600;">
                   <input id="cloud-autosync-check" type="checkbox" checked /> Sincronización automática en segundo plano
                 </label>
               </div>
-              <button type="button" onclick="forceCloudSyncNow()" class="btn btn-light" style="width:100%;">
+              <button type="button" onclick="forceCloudSyncNow()" class="btn btn-light touch-btn" style="width:100%;">
                 <i class="fa-solid fa-rotate"></i> Forzar Sincronización Ahora
               </button>
             </div>
@@ -934,7 +758,7 @@
                 <input id="json-import-file" type="file" accept=".json" onchange="previewImportJSON(event)" class="input" />
                 <div id="json-import-preview" class="hidden space-y-2" style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px;">
                   <div id="json-import-summary" style="font-size:12px;font-weight:700;"></div>
-                  <button type="button" onclick="confirmImportJSON()" class="btn btn-sm btn-warning">Confirmar y Restaurar</button>
+                  <button type="button" onclick="confirmImportJSON()" class="btn btn-sm btn-warning touch-btn">Confirmar y Restaurar</button>
                 </div>
               </div>
             </div>
@@ -950,7 +774,7 @@
     <div class="modal-box space-y-4">
       <div class="flex items-center justify-between" style="border-bottom:1px solid var(--border);padding-bottom:10px;">
         <strong id="modal-order-title" style="font-size:16px;">Nuevo Encargo</strong>
-        <button type="button" onclick="closeModal('modal-order')" class="btn btn-sm btn-light"><i class="fa-solid fa-xmark"></i></button>
+        <button type="button" onclick="closeModal('modal-order')" class="btn btn-sm btn-light touch-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <input type="hidden" id="ord-edit-id" />
       <div class="grid-2">
@@ -958,7 +782,7 @@
           <label class="label">Cliente *</label>
           <div class="flex gap-2">
             <select id="ord-client" class="select" style="flex:1;"></select>
-            <button type="button" onclick="toggleQuickClientForm('order')" class="btn btn-sm btn-light">+ Nuevo</button>
+            <button type="button" onclick="toggleQuickClientForm('order')" class="btn btn-sm btn-light touch-btn">+ Nuevo</button>
           </div>
         </div>
         <div class="grid-2">
@@ -972,8 +796,8 @@
           <input id="qc-order-phone" type="text" placeholder="Teléfono" class="input" />
         </div>
         <div class="flex justify-end gap-2">
-          <button type="button" onclick="toggleQuickClientForm('order', false)" class="btn btn-sm btn-light">Cancelar</button>
-          <button type="button" onclick="saveQuickClient('order')" class="btn btn-sm btn-primary">Guardar</button>
+          <button type="button" onclick="toggleQuickClientForm('order', false)" class="btn btn-sm btn-light touch-btn">Cancelar</button>
+          <button type="button" onclick="saveQuickClient('order')" class="btn btn-sm btn-primary touch-btn">Guardar</button>
         </div>
       </div>
 
@@ -984,7 +808,7 @@
           <input id="ord-item-name" type="text" placeholder="Descripción *" class="input" style="flex:1;min-width:150px;" />
           <input id="ord-item-qty" type="number" min="1" value="1" class="input" style="width:72px;" />
           <input id="ord-item-price" type="number" min="0" step="0.01" placeholder="Precio" class="input" style="width:105px;" />
-          <button type="button" onclick="addOrderDraftItem()" class="btn btn-sm btn-primary">+ Ítem</button>
+          <button type="button" onclick="addOrderDraftItem()" class="btn btn-sm btn-primary touch-btn">+ Ítem</button>
         </div>
         <label class="flex items-center gap-2" style="font-size:12px;color:var(--muted);">
           <input id="ord-reserve-stock" type="checkbox" checked /> Descontar stock si es producto de inventario
@@ -1030,8 +854,8 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <button type="button" onclick="closeModal('modal-order')" class="btn btn-light">Cancelar</button>
-        <button type="button" onclick="saveOrder()" class="btn btn-primary">Guardar Encargo</button>
+        <button type="button" onclick="closeModal('modal-order')" class="btn btn-light touch-btn">Cancelar</button>
+        <button type="button" onclick="saveOrder()" class="btn btn-primary touch-btn">Guardar Encargo</button>
       </div>
     </div>
   </div>
@@ -1040,7 +864,7 @@
     <div class="modal-box modal-sm space-y-3">
       <div class="flex items-center justify-between" style="border-bottom:1px solid var(--border);padding-bottom:10px;">
         <strong style="font-size:15px;">Registrar Abono</strong>
-        <button type="button" onclick="closeModal('modal-abono')" class="btn btn-sm btn-light"><i class="fa-solid fa-xmark"></i></button>
+        <button type="button" onclick="closeModal('modal-abono')" class="btn btn-sm btn-light touch-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div>
         <label class="label">Tipo de Cuenta</label>
@@ -1060,7 +884,7 @@
       <div>
         <div class="flex items-center justify-between">
           <label class="label">Monto del Abono ($) *</label>
-          <button type="button" onclick="fillFullAbono()" class="btn btn-sm btn-light" style="padding:2px 8px;font-size:11px;">Saldo Completo</button>
+          <button type="button" onclick="fillFullAbono()" class="btn btn-sm btn-light touch-btn" style="padding:2px 8px;font-size:11px;">Saldo Completo</button>
         </div>
         <input id="abono-amount" type="number" min="0.01" step="0.01" oninput="updateAbonoRemaining()" class="input" style="font-weight:800;color:#059669;" />
         <div style="font-size:11px;color:var(--muted);margin-top:4px;">Nuevo saldo: <strong id="abono-new-due">$0.00</strong></div>
@@ -1082,8 +906,8 @@
         <input id="abono-note" type="text" placeholder="Opcional" class="input" />
       </div>
       <div class="flex justify-end gap-2">
-        <button type="button" onclick="closeModal('modal-abono')" class="btn btn-light">Cancelar</button>
-        <button type="button" onclick="saveAbono()" class="btn btn-success">Guardar Abono</button>
+        <button type="button" onclick="closeModal('modal-abono')" class="btn btn-light touch-btn">Cancelar</button>
+        <button type="button" onclick="saveAbono()" class="btn btn-success touch-btn">Guardar Abono</button>
       </div>
     </div>
   </div>
@@ -1092,7 +916,7 @@
     <div class="modal-box modal-sm space-y-3">
       <div class="flex items-center justify-between" style="border-bottom:1px solid var(--border);padding-bottom:10px;">
         <strong style="font-size:15px;">Registrar Dinero Recibido</strong>
-        <button type="button" onclick="closeModal('modal-income')" class="btn btn-sm btn-light"><i class="fa-solid fa-xmark"></i></button>
+        <button type="button" onclick="closeModal('modal-income')" class="btn btn-sm btn-light touch-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div><label class="label">Concepto *</label><input id="inc-concept" type="text" placeholder="Ej. Cobro servicio, venta directa..." class="input" /></div>
       <div class="grid-2">
@@ -1112,8 +936,8 @@
         <div><label class="label">Fecha</label><input id="inc-date" type="date" class="input" /></div>
       </div>
       <div class="flex justify-end gap-2">
-        <button type="button" onclick="closeModal('modal-income')" class="btn btn-light">Cancelar</button>
-        <button type="button" onclick="saveDirectIncome()" class="btn btn-success">Guardar</button>
+        <button type="button" onclick="closeModal('modal-income')" class="btn btn-light touch-btn">Cancelar</button>
+        <button type="button" onclick="saveDirectIncome()" class="btn btn-success touch-btn">Guardar</button>
       </div>
     </div>
   </div>
@@ -1122,7 +946,7 @@
     <div class="modal-box modal-sm space-y-3">
       <div class="flex items-center justify-between" style="border-bottom:1px solid var(--border);padding-bottom:10px;">
         <strong id="modal-prod-title" style="font-size:15px;">Producto</strong>
-        <button type="button" onclick="closeModal('modal-product')" class="btn btn-sm btn-light"><i class="fa-solid fa-xmark"></i></button>
+        <button type="button" onclick="closeModal('modal-product')" class="btn btn-sm btn-light touch-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <input type="hidden" id="prod-edit-id" />
       <div><label class="label">Nombre *</label><input id="prod-name" type="text" class="input" /></div>
@@ -1139,8 +963,8 @@
         <div><label class="label">Stock Mínimo</label><input id="prod-min-stock" type="number" min="0" class="input" /></div>
       </div>
       <div class="flex justify-end gap-2">
-        <button type="button" onclick="closeModal('modal-product')" class="btn btn-light">Cancelar</button>
-        <button type="button" onclick="saveProduct()" class="btn btn-primary">Guardar</button>
+        <button type="button" onclick="closeModal('modal-product')" class="btn btn-light touch-btn">Cancelar</button>
+        <button type="button" onclick="saveProduct()" class="btn btn-primary touch-btn">Guardar</button>
       </div>
     </div>
   </div>
@@ -1149,7 +973,7 @@
     <div class="modal-box modal-sm space-y-3">
       <div class="flex items-center justify-between" style="border-bottom:1px solid var(--border);padding-bottom:10px;">
         <strong id="modal-cli-title" style="font-size:15px;">Cliente</strong>
-        <button type="button" onclick="closeModal('modal-client')" class="btn btn-sm btn-light"><i class="fa-solid fa-xmark"></i></button>
+        <button type="button" onclick="closeModal('modal-client')" class="btn btn-sm btn-light touch-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <input type="hidden" id="cli-edit-id" />
       <div><label class="label">Nombre Completo *</label><input id="cli-name" type="text" class="input" /></div>
@@ -1159,8 +983,8 @@
       </div>
       <div><label class="label">Dirección</label><input id="cli-address" type="text" class="input" /></div>
       <div class="flex justify-end gap-2">
-        <button type="button" onclick="closeModal('modal-client')" class="btn btn-light">Cancelar</button>
-        <button type="button" onclick="saveClient()" class="btn btn-primary">Guardar</button>
+        <button type="button" onclick="closeModal('modal-client')" class="btn btn-light touch-btn">Cancelar</button>
+        <button type="button" onclick="saveClient()" class="btn btn-primary touch-btn">Guardar</button>
       </div>
     </div>
   </div>
@@ -1169,8 +993,8 @@
     <div class="modal-box modal-sm space-y-4">
       <div id="print-area" class="space-y-2" style="font-size:13px;"></div>
       <div class="flex justify-end gap-2" style="border-top:1px solid var(--border);padding-top:12px;">
-        <button type="button" onclick="closeModal('modal-receipt')" class="btn btn-light">Cerrar</button>
-        <button type="button" onclick="window.print()" class="btn btn-primary"><i class="fa-solid fa-print"></i> Imprimir</button>
+        <button type="button" onclick="closeModal('modal-receipt')" class="btn btn-light touch-btn">Cerrar</button>
+        <button type="button" onclick="window.print()" class="btn btn-primary touch-btn"><i class="fa-solid fa-print"></i> Imprimir</button>
       </div>
     </div>
   </div>
@@ -1180,8 +1004,8 @@
       <strong id="confirm-title" style="font-size:15px;">Confirmar</strong>
       <p id="confirm-message" style="margin:0;font-size:12px;color:var(--muted);"></p>
       <div class="flex justify-end gap-2">
-        <button type="button" onclick="closeModal('modal-confirm')" class="btn btn-sm btn-light">Cancelar</button>
-        <button type="button" id="confirm-yes-btn" class="btn btn-sm btn-danger">Confirmar</button>
+        <button type="button" onclick="closeModal('modal-confirm')" class="btn btn-sm btn-light touch-btn">Cancelar</button>
+        <button type="button" id="confirm-yes-btn" class="btn btn-sm btn-danger touch-btn">Confirmar</button>
       </div>
     </div>
   </div>
@@ -1198,25 +1022,6 @@
       let creditViewMode = "invoices";
       let orderDraftItems = [];
       let pendingImportData = null;
-      let deferredInstallPrompt = null;
-
-      window.addEventListener("beforeinstallprompt", function (e) {
-        e.preventDefault();
-        deferredInstallPrompt = e;
-        const txt = document.getElementById("install-app-text");
-        if (txt) txt.textContent = "Instalar";
-      });
-
-      window.triggerInstallApp = function () {
-        if (deferredInstallPrompt) {
-          deferredInstallPrompt.prompt();
-          deferredInstallPrompt.userChoice.then(function () {
-            deferredInstallPrompt = null;
-          });
-          return;
-        }
-        showToast("Usa el menú del navegador → Agregar a pantalla principal / Instalar app");
-      };
 
       function getWorkspaceId() {
         const params = new URLSearchParams(window.location.search);
@@ -1595,7 +1400,7 @@
         refreshAllViews();
       }
 
-      // Helpers
+      // Formatting & UI helpers
       function fmtMoney(n) {
         return "$" + (Number(n) || 0).toLocaleString("es-CL", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       }
@@ -1612,6 +1417,10 @@
         clearTimeout(window._gpToastTimer);
         window._gpToastTimer = setTimeout(function () { el.classList.add("hidden"); }, 2800);
       }
+
+      window.triggerInstallApp = function () {
+        showToast("En Android/PC: abre el menú del navegador y elige 'Instalar aplicación' o 'Agregar a pantalla principal'.");
+      };
 
       window.openModal = function (id) { document.getElementById(id).classList.remove("hidden"); };
       window.closeModal = function (id) { document.getElementById(id).classList.add("hidden"); };
@@ -1663,6 +1472,9 @@
       window.copyWorkspaceUrl = function () {
         const inp = document.getElementById("share-workspace-url");
         inp.select();
+        try {
+          document.execCommand("copy");
+        } catch (e) {}
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(inp.value).catch(function () {});
         }
@@ -2291,8 +2103,8 @@
       // Credits & Abonos
       window.setCreditViewMode = function (mode) {
         creditViewMode = mode;
-        document.getElementById("cred-tab-invoices").className = "btn btn-sm " + (mode === "invoices" ? "btn-primary" : "btn-light");
-        document.getElementById("cred-tab-clients").className = "btn btn-sm " + (mode === "clients" ? "btn-primary" : "btn-light");
+        document.getElementById("cred-tab-invoices").className = "btn btn-sm touch-btn " + (mode === "invoices" ? "btn-primary" : "btn-light");
+        document.getElementById("cred-tab-clients").className = "btn btn-sm touch-btn " + (mode === "clients" ? "btn-primary" : "btn-light");
         renderCredits();
       };
 
@@ -2728,13 +2540,6 @@
         showToast("Cliente guardado");
       };
 
-      window.deleteClient = function (id) {
-        customConfirm("Eliminar Cliente", "¿Eliminar este cliente?", function () {
-          removeRecord("clients", id);
-          showToast("Cliente eliminado");
-        });
-      };
-
       window.renderClients = function () {
         const q = (document.getElementById("cli-search").value || "").toLowerCase();
         const list = STATE.clients.filter(function (c) {
@@ -2851,14 +2656,14 @@
         document.getElementById("kpi-inv-value").textContent = fmtMoney(invVal);
         document.getElementById("kpi-low-stock").textContent = lowProds.length + " bajo stock";
 
-        ["badge-orders", "mbadge-orders"].forEach(function (id) {
+        ["badge-orders", "mbadge-orders", "sbadge-orders"].forEach(function (id) {
           const el = document.getElementById(id);
           if (el) {
             el.textContent = actOrd.length;
             el.classList.toggle("hidden", actOrd.length === 0);
           }
         });
-        ["badge-credits", "mbadge-credits"].forEach(function (id) {
+        ["badge-credits", "mbadge-credits", "sbadge-credits"].forEach(function (id) {
           const el = document.getElementById(id);
           if (el) {
             el.textContent = pendCred.length;
@@ -2896,7 +2701,7 @@
         if (document.getElementById("cloud-apikey-input")) document.getElementById("cloud-apikey-input").value = _cfg.apiKey || "";
         if (document.getElementById("cloud-autosync-check")) document.getElementById("cloud-autosync-check").checked = _cfg.autoSync !== false;
         document.getElementById("workspace-id-input").value = currentWorkspaceId;
-        const sideWs = document.getElementById("sidebar-ws-name");
+        const sideWs = document.getElementById("sidebar-ws-label");
         if (sideWs) sideWs.textContent = currentWorkspaceId;
         const base = window.location.href.split("?")[0];
         document.getElementById("share-workspace-url").value = base + "?ws=" + encodeURIComponent(currentWorkspaceId);
